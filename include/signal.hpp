@@ -35,7 +35,6 @@ namespace signal0x
         priority_connection_subscriber_type                     pcst_;
 
     public:
-        // ctors
         signal() : is_blocked_(false) {}
         signal( const self_type& other ) : is_blocked_( other.is_blocked_ ), 
                                            pcst_( other.pcst_ ) {}
@@ -83,7 +82,6 @@ namespace signal0x
         disconnect( const connection_type& c )
         {
             for ( auto& i : pcst_ )
-                //for ( auto& j : i.second )
                     i.second.erase( c );
         }
 
