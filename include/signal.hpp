@@ -27,7 +27,7 @@ namespace signal0x
         typedef std::function<R( Args... )>                     function_type;
         typedef function_type                                   subscriber_type;
         typedef function_type                                   slot_type;
-        typedef std::multimap<connection_type, subscriber_type> associate_connection_subscriber_type;
+        typedef std::map<connection_type, subscriber_type>      associate_connection_subscriber_type;
         typedef std::map<priority_type, associate_connection_subscriber_type> 
                                                                 priority_connection_subscriber_type;
     private:
