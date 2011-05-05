@@ -8,7 +8,7 @@ using namespace std;
 // 被观察目标
 struct CSubject{
    
-    typedef sig::signal<void, string> sig_t;
+    typedef signal0x::signal<void, string> sig_t;
     sig_t m_sig;
  
     // 发布信息

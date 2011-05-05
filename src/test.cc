@@ -3,7 +3,7 @@
 #include <iterator>
 #include <functional>
 
-using namespace feng;
+using namespace signal0x;
 
 
 struct hello
@@ -67,6 +67,9 @@ int main()
 
     s();
     std::cout << "\n\n";
+
+    s.disconnect( c3 );
+
 
     signal<void,int> s1;
     s1.connect( print_1 );

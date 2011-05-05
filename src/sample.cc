@@ -50,7 +50,7 @@ struct fii
 
 int main()
 {
-    feng::signal<int, int> sig;
+    signal0x::signal<int, int> sig;
 
     std::cout << "\n[[normal test]]\n";
     //connect to normal function

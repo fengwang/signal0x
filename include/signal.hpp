@@ -1,7 +1,7 @@
 #ifndef _SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 #define _SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 
-#include <singleton.hpp>// for feng::singleton 
+#include <singleton.hpp>// for signal0x::singleton 
 
 #include <cstddef>      // for std::ptrdiff_t
 #include <functional>   // for std::function
@@ -12,7 +12,7 @@
 #include <cstdint>      // for std::int_least64_t
 #include <limits>       // for std::numeric_limits<T>::max()
 
-namespace feng
+namespace signal0x
 {
 
     typedef std::ptrdiff_t                                  connection_type;
@@ -83,7 +83,7 @@ namespace feng
         disconnect( const connection_type& c )
         {
             for ( auto& i : pcst_ )
-                for ( auto& j : i.second )
+                //for ( auto& j : i.second )
                     i.second.erase( c );
         }
 
@@ -136,7 +136,7 @@ namespace feng
     swap( signal<R,Arg...>& lhs, signal<R,Arg...>& rhs )
     { lhs.swap( rhs ); }
 
-}//namespace sig
+}//namespace signal0x
 
 #endif//_SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 

@@ -7,7 +7,7 @@
 class Document
 {
 public:
-    typedef feng::signal<void,bool>  signal_t;
+    typedef signal0x::signal<void,bool>  signal_t;
     typedef signal_t::connection_type  connection_t;
 
 public:
