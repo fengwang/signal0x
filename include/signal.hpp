@@ -9,8 +9,8 @@
 #include <algorithm>    // for std::swap
 #include <map>          // for std::map
 #include <utility>      // for std::pair
-#include <cstdint>      // for std::int_least64_t
 #include <limits>       // for std::numeric_limits<T>::max()
+#include <mutex>        // for std::mutex etc.
 
 namespace signal0x
 {
@@ -21,7 +21,7 @@ namespace signal0x
     struct signal
     {
         typedef std::ptrdiff_t                                  connection_type;
-        typedef std::int_least64_t                              priority_type;
+        typedef int                                             priority_type;
         typedef signal                                          self_type;
         typedef self_type                                       publisher_type;
         typedef std::function<R( Args... )>                     function_type;
@@ -30,9 +30,12 @@ namespace signal0x
         typedef std::map<connection_type, subscriber_type>      associate_connection_subscriber_type;
         typedef std::map<priority_type, associate_connection_subscriber_type> 
                                                                 priority_connection_subscriber_type;
+        typedef std::mutex                                      mutex_type;
+        typedef std::lock_guard<mutex_type>                     lock_guard_type;
     private:
         bool                                                    is_blocked_;
         priority_connection_subscriber_type                     pcst_;
+        mutable mutex_type                                      m_;
 
     public:
         signal() : is_blocked_(false) {}
@@ -40,9 +43,16 @@ namespace signal0x
                                            pcst_( other.pcst_ ) {}
         signal( self_type&& other ) : is_blocked_( std::move(other.is_blocked_) ), 
                                       pcst_( std::move(other.pcst_) ) {}
+        // 1)  lock both mutexes safely 
+        // 2)  adopt the ownership into the std::lock_guard instances  
+        //     to ensure the locks are released safely at the end of the function.
         self_type& 
         operator = ( const self_type& other )
-        {
+        {   // 1)
+            std::lock( m_, other.m_); 
+            // 2)
+            lock_guard_type l1( m_, std::adopt_lock );      
+            lock_guard_type l2( other.m_, std::adopt_lock );
             is_blocked_ = other.is_blocked_;
             pcst_ = other.pcst_;
             return *this;
@@ -60,6 +70,7 @@ namespace signal0x
         connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
         {
             auto&c =  singleton<connection_type>::instance();
+            lock_guard_type l( m_ );      
             (pcst_[w]).insert( std::make_pair( c, (function_type)(f) ) );
             return c++;
         }
@@ -69,6 +80,7 @@ namespace signal0x
         connect(F&& f, const priority_type w = std::numeric_limits<priority_type>::max() )
         {
             auto&c =  singleton<connection_type>::instance();
+            lock_guard_type l( m_ );      
             (pcst_[w]).insert( std::make_pair( c, (function_type)(std::forward<F>(f)) ) );
             return c++;
         }
@@ -81,17 +93,22 @@ namespace signal0x
         void 
         disconnect( const connection_type& c )
         {
+            lock_guard_type l( m_ );      
             for ( auto& i : pcst_ )
                     i.second.erase( c );
         }
 
         void 
         disconnect_all()
-        { pcst_.clear(); }
+        { 
+            lock_guard_type l( m_ );      
+            pcst_.clear(); 
+        }
 
         void 
         operator()( Args... args ) const
         { 
+            lock_guard_type l( m_ );      
             if ( is_blocked_ ) return;
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
@@ -102,6 +119,7 @@ namespace signal0x
         void
         emit( Output_Iterator o, Args... args ) const
         {
+            lock_guard_type l( m_ );      
             if ( is_blocked_ ) return;
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
@@ -110,19 +128,31 @@ namespace signal0x
 
         void 
         block() 
-        { is_blocked_ = true; }
+        { 
+            lock_guard_type l( m_ );      
+            is_blocked_ = true; 
+        }
 
         void 
         unblock()
-        { is_blocked_ = false; }
+        { 
+            lock_guard_type l( m_ );      
+            is_blocked_ = false; 
+        }
 
         bool 
         is_blocked() const 
-        { return is_blocked_; }
+        { 
+            lock_guard_type l( m_ );      
+            return is_blocked_; 
+        }
 
         void 
         swap( self_type& other )
         {
+            std::lock( m_, other.m_); 
+            lock_guard_type l1( m_, std::adopt_lock );      
+            lock_guard_type l2( other.m_, std::adopt_lock );
             std::swap( pcst_, other.pcst_ );
             std::swap( is_blocked_, other.is_blocked_ );
         }
