@@ -134,6 +134,28 @@ namespace signal0x
     swap( signal<R,Arg...>& lhs, signal<R,Arg...>& rhs )
     { lhs.swap( rhs ); }
 
+    template< typename R, typename... Arg >
+    void 
+    disconnect( signal<R, Arg...>& sig, const connection_type& con )
+    { sig.disconnect( con ); }
+
+    template< typename R, typename... Arg >
+    void 
+    disconnect( const connection_type& con, signal<R, Arg...>& sig )
+    { sig.disconnect( con ); }
+
+    template< typename R, typename... Arg, typename F >
+    connection_type
+    connect( signal<R, Arg...>& sig, F f, 
+             const typename signal<R, Arg...>::priority_type w = std::numeric_limits<typename signal<R, Arg...>::priority_type>::max() )
+    { return sig.connect( f, w ); }
+
+    template< typename R, typename... Arg, typename F >
+    connection_type
+    connect( F f, signal<R, Arg...>& sig, 
+             const typename signal<R, Arg...>::priority_type w = std::numeric_limits<typename signal<R, Arg...>::priority_type>::max() )
+    { return sig.connect( f, w ); }
+
 }//namespace signal0x
 
 #endif//_SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
