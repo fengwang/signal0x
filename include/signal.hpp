@@ -70,9 +70,10 @@ namespace signal0x
         connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
         {
             auto&c =  singleton<connection_type>::instance();
+            auto const cc = c++;
             lock_guard_type l( m_ );      
-            (pcst_[w]).insert( std::make_pair( c, (function_type)(f) ) );
-            return c++;
+            (pcst_[w]).insert( std::make_pair( cc, (function_type)(f) ) );
+            return cc;
         }
 
         template< typename F >
@@ -80,9 +81,10 @@ namespace signal0x
         connect(F&& f, const priority_type w = std::numeric_limits<priority_type>::max() )
         {
             auto&c =  singleton<connection_type>::instance();
+            auto const cc = c++;
             lock_guard_type l( m_ );      
-            (pcst_[w]).insert( std::make_pair( c, (function_type)(std::forward<F>(f)) ) );
-            return c++;
+            (pcst_[w]).insert( std::make_pair( cc, (function_type)(std::forward<F>(f)) ) );
+            return cc;
         }
 
         template< typename F >
