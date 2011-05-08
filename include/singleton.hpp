@@ -9,12 +9,11 @@ namespace signal0x
             typedef T value_type;
             typedef singleton self_type;
 
-        private:
-            singleton( const self_type& );
-            self_type& operator = ( const self_type& );
-            singleton( self_type&& );
-            self_type& operator = ( self_type&& );
-            singleton();
+            singleton( const self_type& ) = delete;
+            self_type& operator = ( const self_type& ) = delete;
+            singleton( self_type&& ) = delete;
+            self_type& operator = ( self_type&& ) = delete;
+            singleton() = delete;
 
         private:
             struct constuctor

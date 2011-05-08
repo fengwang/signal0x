@@ -8,7 +8,7 @@
 #include <utility>      // for std::forward, std::move
 #include <algorithm>    // for std::swap
 #include <map>          // for std::map
-#include <utility>      // for std::pair
+#include <utility>      // for std::make_pair
 #include <limits>       // for std::numeric_limits<T>::max()
 #include <mutex>        // for std::mutex etc.
 
@@ -63,17 +63,6 @@ namespace signal0x
             is_blocked_ = std::move(other.is_blocked_);
             pcst_ = std::move(other.pcst_);
             return *this;
-        }
-
-        template< typename F >
-        const connection_type
-        connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
-        {
-            auto&c =  singleton<connection_type>::instance();
-            auto const cc = c++;
-            lock_guard_type l( m_ );      
-            (pcst_[w]).insert( std::make_pair( cc, (function_type)(f) ) );
-            return cc;
         }
 
         template< typename F >
@@ -187,6 +176,32 @@ namespace signal0x
     connect( F f, signal<R, Arg...>& sig, 
              const typename signal<R, Arg...>::priority_type w = std::numeric_limits<typename signal<R, Arg...>::priority_type>::max() )
     { return sig.connect( f, w ); }
+
+
+    template< typename R, typename... Args >
+    struct scope_connection
+    {
+        typedef scope_connection                        self_type;
+        typedef signal<R, Args...>                      signal_type;
+        typedef typename signal_type::connection_type   connection_type;
+        typedef typename signal_type::priority_type     priority_type;
+        typedef typename signal_type::function_type     function_type;
+
+        template< typename F >
+        scope_connection( signal_type& sig, F&& f, 
+                          const priority_type w = std::numeric_limits<priority_type>::max() ) : sig_(sig)
+        { con_ = sig_.connect(std::forward<function_type>(f), w); }
+
+        ~scope_connection()
+        { sig_.disconnect(con_); }
+
+        scope_connection( const self_type& ) = delete;
+        self_type& operator = ( const self_type& ) = delete;
+
+        private:
+        signal_type& sig_;
+        connection_type con_;
+    };
 
 }//namespace signal0x
 
