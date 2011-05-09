@@ -78,7 +78,18 @@ namespace signal0x
 
         template< typename F >
         const connection_type
-        connect(const priority_type w, F f)
+        connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
+        {
+            auto&c =  singleton<connection_type>::instance();
+            auto const cc = c++;
+            lock_guard_type l( m_ );      
+            (pcst_[w]).insert( std::make_pair( cc, (function_type)(f) ) );
+            return cc;
+        }
+
+        template< typename F >
+        const connection_type
+        connect( const priority_type w, F f )
         { return connect( f, w ); }
 
         void 
@@ -191,6 +202,10 @@ namespace signal0x
         scope_connection( signal_type& sig, F&& f, 
                           const priority_type w = std::numeric_limits<priority_type>::max() ) : sig_(sig)
         { con_ = sig_.connect(std::forward<function_type>(f), w); }
+
+        const connection_type
+        connection() const 
+        { return con_; }
 
         ~scope_connection()
         { sig_.disconnect(con_); }
