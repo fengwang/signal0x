@@ -1,0 +1,116 @@
+\documentclass[9pt,onside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{alltt}
+
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.2,0,0.4}{#1}}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.2,0.73,0.02}{#1}}
+\newcommand{\hlesc}[1]{\textcolor[rgb]{0.65,0.09,0.38}{#1}}
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.09,0.38,0.65}{#1}}
+\newcommand{\hlpps}[1]{\textcolor[rgb]{0.4,0.2,0}{#1}}
+\newcommand{\hlslc}[1]{\textcolor[rgb]{0,0.4,0.2}{#1}}
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0,0.4,0.2}{#1}}
+\newcommand{\hlppc}[1]{\textcolor[rgb]{0.33,0.45,0.69}{#1}}
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0.33,0.33,0.33}{#1}}
+\newcommand{\hllin}[1]{\textcolor[rgb]{0.6,0.6,0.6}{#1}}
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{1,0.19,0.19}{#1}}
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.96,0.55,0.14}{#1}}
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,1}{#1}}
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.82,0.11,0.93}{#1}}
+\author{Wang Feng}
+\title{Introduction to signal0x}
+\begin{document}
+\maketitle
+
+\section{Tutorial}
+\subsection{Motivation}
+
+\paragraph{This is another wheel invented as an implementation of Observer Pattern written in C++.}
+\paragraph{This is also a demonstration of the upcoming c++0x.}
+\subparagraph{Features:}
+\begin{enumerate}
+    \item Thread--safe
+    \item Faster
+    \item Non--intrusive connection tracking 
+    \item Automatic disconnection
+\end{enumerate}
+
+\subsection{Compatibility Note}
+
+\paragraph{Signal0x library compiles currently only compatibile with g++4.6 and g++4.7, as it employs many c++0x features such as:}
+\begin{enumerate}
+\item variadic template
+\item range--based for loop
+\item rvalue reference
+\item lambda
+\item mutex
+\item ...
+\end{enumerate}
+
+
+\subsection{Connecting to Signals}
+
+
+
+
+\subsubsection{First Example -- Hello World}
+
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlslc{//\ an\ ordinary\ function}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello\textunderscore world}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ World.}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\\
+\hllin{\ \ \ \ 7\ }\hlslc{//(1)\ a\ signal\ with\ no\ arguments\ and\ a\ void\ return\ value}\\
+\hllin{\ \ \ \ 8\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\\
+\hllin{\ \ \ 10\ }\hlslc{//(2)\ connect\ function\ to\ signal}\\
+\hllin{\ \ \ 11\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello\textunderscore world\ }\hlopt{);}\\
+\hllin{\ \ \ 12\ }\hlstd{}\\
+\hllin{\ \ \ 13\ }\hlslc{//(3)\ signal\ triggered}\\
+\hllin{\ \ \ 14\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+\paragraph{This example writes "Hello World." using signals and slots in the following way:}
+\begin{enumerate}
+\item create a signal sig, a signal that takes no arguments and has a void return value 
+\item connect the hello\_world function to the signal using the connect method
+\item the signal is triggered, which in turns invokes hello\_world() to print "Hello World.".
+\end{enumerate}
+
+
+\subsubsection{Slots}
+
+\subsubsection{Multiple Slots -- Hello Hello World}
+
+\subsubsection{Ordering Multiple Slots -- World Hello}
+
+
+
+
+
+
+\subsection{Examples}
+
+
+
+\section{Comparison With Boost::signals and sigc::signal}
+\subsection{Grammar Comparison}
+\subsection{Benchmark}
+
+\section{Design and Implementation}
+
+
+
+
+
+\end{document}
+
