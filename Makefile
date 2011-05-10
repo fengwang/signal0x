@@ -1,4 +1,5 @@
-DEFINES = -O2  -march=native -std=c++0x 
+#DEFINES = -O2  -march=native -std=c++0x 
+DEFINES = -g -std=c++0x 
 CFLAGS = -Wall $(DEFINES) 
 CXX = g++
 INCLUDE = include

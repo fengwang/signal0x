@@ -31,18 +31,19 @@ void double_1( int i )
 
 
 double d1( double d )
-{ return d; }
+{ std::cout << "\nd1 called" << std::endl; return d; }
 
 double d2( double d )
-{ return d+d; }
+{ std::cout << "\nd2 called" << std::endl; return d+d; }
 
 double d3( double d )
-{ return d1(d)+d2(d); }
+{ std::cout << "\nd3 called" << std::endl;  return d1(d)+d2(d); }
 
 struct d4 
 {
     double do_d4( double d ) const 
     {
+        std::cout << "\nd4 called" << std::endl;
         return d3(d) + d1(d);
     }
 };
@@ -87,6 +88,18 @@ int main()
 
     dd( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
     //dd.emit( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
+
+    dd.disconnect_all();
+
+    auto con = dd.connect( d1, d2, d3, std::bind(&d4::do_d4, &d4_, std::placeholders::_1), [](double d){ std::cout << "\nlamda fun called" << std::endl; return d; } );
+
+    std::cout << "\n[[chain function as slot]]\n" << std::endl;
+    dd( 2.0);
+
+    dd.disconnect( con );
+    std::cout << "\n[[chain function disconnect]]\n";
+    dd(3.0);
+
 
     return 0;
 }

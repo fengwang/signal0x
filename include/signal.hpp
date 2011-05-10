@@ -1,7 +1,8 @@
 #ifndef _SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 #define _SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 
-#include <singleton.hpp>// for signal0x::singleton 
+#include <singleton.hpp>        // for signal0x::singleton 
+#include <chain_function.hpp>   //for std::make_chain_function
 
 #include <cstddef>      // for std::ptrdiff_t
 #include <functional>   // for std::function
@@ -95,12 +96,18 @@ namespace signal0x
 
         template< typename... F >
         const connection_type
-        connect( F... f )
+        connect( const priority_type w, const F&... f )
         {
-        
+            return connect( chain_function<R, Args...>()(f...), w );
+            //return connect( make_chain_function<R, Args...>( f...), w );
         }
 
-
+        template< typename... F >
+        const connection_type
+        connect(  const F&... f )
+        {
+            return connect( std::numeric_limits<priority_type>::max(), f... );
+        }
 
         void 
         disconnect( const connection_type& c )
