@@ -53,6 +53,15 @@
 \end{enumerate}
 
 
+\paragraph{The header file of signal0x is\\}
+\hlstd{}\hlppc{\#include\ $<$signal.hpp$>$}\hspace*{\fill}
+\paragraph{The namespace of signal0x is\\}
+\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\hspace*{\fill} 
+\paragraph{A typical commandline compilation is\\}
+\hlstd{}  g++ -o test test.cc -std=c++0x -O2
+
+
+
 \subsection{Connecting to Signals}
 
 
@@ -81,17 +90,114 @@
 
 \paragraph{This example writes "Hello World." using signals and slots in the following way:}
 \begin{enumerate}
-\item create a signal sig, a signal that takes no arguments and has a void return value 
-\item connect the hello\_world function to the signal using the connect method
-\item the signal is triggered, which in turns invokes hello\_world() to print "Hello World.".
+\item create a signal \hlkwd{sig}, a signal that takes no arguments and has a void return value 
+\item connect a slot, the \hlkwd{hello\_world} function, to the signal using the \hlkwd{connect} method
+\item the signal is triggered, which in turns invokes \hlkwd{hello\_world()} to print "Hello World.".
 \end{enumerate}
 
 
 \subsubsection{Slots}
 
-\subsubsection{Multiple Slots -- Hello Hello World}
+\paragraph{Several kinds of slots can be connected to a signal}
 
-\subsubsection{Ordering Multiple Slots -- World Hello}
+\begin{enumerate}
+
+\item a function \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{}\hlkwd{f}\hlstd{}\hlopt{()\{\}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 6\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{f\ }\hlopt{);}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+\item a functor \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{struct\ }\hlstd{f}\hlopt{\{\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()\ }\hlstd{}\hlkwb{const\ }\hlstd{}\hlopt{\{\}\};}\\
+\hllin{\ \ \ \ 5\ }\hlstd{f\ f\textunderscore }\hlopt{;}\\
+\hllin{\ \ \ \ 6\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 7\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwd{f}\hlstd{}\hlopt{()\ );}\\
+\hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{f\textunderscore \ }\hlopt{);}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+
+\item a lambda object \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
+\hllin{\ \ \ \ 3\ }\hlstd{\\
+\hllin{\ \ \ \ 4\ }signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 5\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ {[}{]}\{\}\ );}\hlstd{}\hlslc{//an\ anonymous\ lambda\ object}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+
+
+
+\item a pointer to a member function \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$functional$>$}\hlslc{//for\ std::bind\ }\\
+\hllin{\ \ \ \ 3\ }\hlppc{}\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\\
+\hllin{\ \ \ \ 5\ }\hlkwb{struct\ }\hlstd{f}\\
+\hllin{\ \ \ \ 6\ }\hlopt{\{}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{ff}\hlstd{}\hlopt{()\ \{\}}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ \ 9\ }\hlstd{f\ f\textunderscore }\hlopt{;}\\
+\hllin{\ \ \ 10\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 11\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{bind}\hlstd{}\hlopt{(\ \&}\hlstd{f}\hlopt{::}\hlstd{ff}\hlopt{,\ \&}\hlstd{f\textunderscore }\hlopt{)\ );}\\
+\hllin{\ \ \ 12\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+\end{enumerate}
+
+
+\subsubsection{Multiple Slots}
+
+\paragraph{Multiple slots can be connected to a same signal, and if the signal is triggered, all slots connected to this signal will be called.  \\}
+Another "hello world" example \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{\\
+\hllin{\ \ \ \ 7\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello\ }\hlopt{);}\\
+\hllin{\ \ \ \ 9\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!"}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+
+\subsubsection{Ordering Multiple Slots}
 
 
 

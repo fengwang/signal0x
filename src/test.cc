@@ -85,7 +85,8 @@ int main()
     d4 d4_;
     dd.connect( std::bind(&d4::do_d4, &d4_, std::placeholders::_1) );
 
-    dd.emit( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
+    dd( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
+    //dd.emit( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
 
     return 0;
 }

@@ -73,7 +73,7 @@ int main()
 
     std::cout << "\n\n[[collect result with a container]]\n";
     std::vector<int> arr;
-    sig.emit( std::back_inserter(arr), 6 );
+    sig( std::back_inserter(arr), 6 );
     std::cout << "\n\n-->>the collected result:\n\n";
     std::copy( arr.begin(), arr.end(), std::ostream_iterator<int>(std::cout, "\n"));
 

@@ -92,6 +92,16 @@ namespace signal0x
         connect( const priority_type w, F f )
         { return connect( f, w ); }
 
+
+        template< typename... F >
+        const connection_type
+        connect( F... f )
+        {
+        
+        }
+
+
+
         void 
         disconnect( const connection_type& c )
         {
@@ -118,14 +128,15 @@ namespace signal0x
         }
 
         template<typename Output_Iterator>
-        void
-        emit( Output_Iterator o, Args... args ) const
+        Output_Iterator
+        operator() ( Output_Iterator o, Args... args ) const
         {
             lock_guard_type l( m_ );      
-            if ( is_blocked_ ) return;
+            if ( is_blocked_ ) return o;
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
                     *o++ = (j.second)( args... );
+            return o;
         }
 
         void 
