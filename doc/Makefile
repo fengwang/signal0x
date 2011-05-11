@@ -4,6 +4,7 @@ all :
 	latex introduction.to.signal0x.tex
 	dvips introduction.to.signal0x.dvi
 	ps2pdf14 introduction.to.signal0x.ps
+	apvlv introduction.to.signal0x.pdf
 
 .PHONY : clean distclean
 clean:

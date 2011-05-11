@@ -2,8 +2,7 @@
 #define _SIGNAL_HPP_INCLUDED_SOIU498ASDFKLSFDLKJXCVKJDSLKFJASLKJ438721SDP230SFAJHEIOUFDJLKSAFLKSAFOIU3498YSFDUIWEIUOWOIUE
 
 #include <singleton.hpp>        // for signal0x::singleton 
-#include <chain_function.hpp>   //for std::make_chain_function
-
+#include <chain_function.hpp>   // for signal0x::chain_function
 #include <cstddef>      // for std::ptrdiff_t
 #include <functional>   // for std::function
 #include <utility>      // for std::forward, std::move
@@ -15,24 +14,22 @@
 
 namespace signal0x
 {
-
     typedef std::ptrdiff_t                                  connection_type;
 
     template< typename R, typename... Args >
     struct signal
     {
-        typedef std::ptrdiff_t                                  connection_type;
-        typedef int                                             priority_type;
-        typedef signal                                          self_type;
-        typedef self_type                                       publisher_type;
-        typedef std::function<R( Args... )>                     function_type;
-        typedef function_type                                   subscriber_type;
-        typedef function_type                                   slot_type;
-        typedef std::map<connection_type, subscriber_type>      associate_connection_subscriber_type;
-        typedef std::map<priority_type, associate_connection_subscriber_type> 
-                                                                priority_connection_subscriber_type;
-        typedef std::mutex                                      mutex_type;
-        typedef std::lock_guard<mutex_type>                     lock_guard_type;
+        typedef std::ptrdiff_t                                                  connection_type;
+        typedef int                                                             priority_type;
+        typedef signal                                                          self_type;
+        typedef self_type                                                       publisher_type;
+        typedef std::function<R( Args... )>                                     function_type;
+        typedef function_type                                                   subscriber_type;
+        typedef function_type                                                   slot_type;
+        typedef std::map<connection_type, subscriber_type>                      associate_connection_subscriber_type;
+        typedef std::map<priority_type, associate_connection_subscriber_type>   priority_connection_subscriber_type;
+        typedef std::mutex                                                      mutex_type;
+        typedef std::lock_guard<mutex_type>                                     lock_guard_type;
     private:
         bool                                                    is_blocked_;
         priority_connection_subscriber_type                     pcst_;
@@ -68,17 +65,6 @@ namespace signal0x
 
         template< typename F >
         const connection_type
-        connect(F&& f, const priority_type w = std::numeric_limits<priority_type>::max() )
-        {
-            auto&c =  singleton<connection_type>::instance();
-            auto const cc = c++;
-            lock_guard_type l( m_ );      
-            (pcst_[w]).insert( std::make_pair( cc, (function_type)(std::forward<F>(f)) ) );
-            return cc;
-        }
-
-        template< typename F >
-        const connection_type
         connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
         {
             auto&c =  singleton<connection_type>::instance();
@@ -90,24 +76,18 @@ namespace signal0x
 
         template< typename F >
         const connection_type
-        connect( const priority_type w, F f )
+        connect( const priority_type w, const F& f )
         { return connect( f, w ); }
-
 
         template< typename... F >
         const connection_type
         connect( const priority_type w, const F&... f )
-        {
-            return connect( chain_function<R, Args...>()(f...), w );
-            //return connect( make_chain_function<R, Args...>( f...), w );
-        }
+        { return connect( chain_function<R, Args...>()(f...), w ); }
 
         template< typename... F >
         const connection_type
         connect(  const F&... f )
-        {
-            return connect( std::numeric_limits<priority_type>::max(), f... );
-        }
+        { return connect( std::numeric_limits<priority_type>::max(), f... ); }
 
         void 
         disconnect( const connection_type& c )

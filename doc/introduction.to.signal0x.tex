@@ -1,5 +1,6 @@
 
 \documentclass[9pt,onside,a4paper]{article}
+\usepackage[timestamp,first]{draftcopy}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -8,6 +9,8 @@
 \usepackage{booktabs}
 \usepackage{color}
 \usepackage{alltt}
+\usepackage{framed}
+\usepackage{lipsum}
 
 \newcommand{\hlstd}[1]{\textcolor[rgb]{0.2,0,0.4}{#1}}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.2,0.73,0.02}{#1}}
@@ -23,6 +26,12 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.96,0.55,0.14}{#1}}
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,1}{#1}}
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.82,0.11,0.93}{#1}}
+\newcommand{\hlred}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+
+
+\definecolor{shadecolor}{rgb}{0.92,0.92,0.92}
+
+
 \author{Wang Feng}
 \title{Introduction to signal0x}
 \begin{document}
@@ -38,10 +47,9 @@
     \item Thread--safe
     \item Faster
     \item Non--intrusive connection tracking 
-    \item Automatic disconnection
 \end{enumerate}
 
-\subsection{Compatibility Note}
+\subsection{Compatibility note}
 
 \paragraph{Signal0x library compiles currently only compatibile with g++4.6 and g++4.7, as it employs many c++0x features such as:}
 \begin{enumerate}
@@ -59,16 +67,16 @@
 \paragraph{The namespace of signal0x is\\}
 \hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\hspace*{\fill} 
 \paragraph{A typical commandline compilation is\\}
-\hlstd{}  g++ -o test test.cc -std=c++0x -O2
+\hlstd{}  g++ -o test test.cc -std=c++0x -O2 -I\hlred{PATH/TO/HEAD/FILE}
 
 
 
-\subsection{Connecting to Signals}
+\subsection{Connecting to signals}
 
 
 
 
-\subsubsection{First Example -- Hello World}
+\subsubsection{First example -- hello world}
 
 \ttfamily
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlslc{//\ an\ ordinary\ function}\\
@@ -176,9 +184,9 @@
 \end{enumerate}
 
 
-\subsubsection{Multiple Slots}
+\subsubsection{Multiple slots}
 
-\paragraph{Multiple slots can be connected to a same signal, and if the signal is triggered, all slots connected to this signal will be called.  \\}
+\paragraph{Multiple slots can be connected to a same signal one by one, and if the signal is triggered, all slots connected to this signal will be called.  \\}
 Another "hello world" example \\
 
 \noindent
@@ -197,9 +205,283 @@ Another "hello world" example \\
 \normalfont
 \normalsize
 
+\paragraph{Simply, multiple slots can be connected to a same signal at the same time\\}
+for example: \\
 
-\subsubsection{Ordering Multiple Slots}
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{\\
+\hllin{\ \ \ \ 7\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!"}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
 
+\subsubsection{Ordering multiple slots call priorities}
+
+\paragraph{Connection could be created with priority argument, which means slots can be called in a specified order we set. \\}
+an example: \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{struct\ }\hlstd{good}\\
+\hllin{\ \ \ \ 7\ }\hlopt{\{}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()}\hlstd{\ \ }\hlopt{}\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"\ Good\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 11\ }\hlstd{\\
+\hllin{\ \ \ 12\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 13\ }\hlstd{\\
+\hllin{\ \ \ 14\ }sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 15\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\\
+\hllin{\ \ \ 16\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{3}\hlstd{}\hlopt{,\ {[}{]}()\{}\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\}\ );}\\
+\hllin{\ \ \ 17\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwd{good}\hlstd{}\hlopt{(),\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{);}\\
+\hllin{\ \ \ 18\ }\hlstd{}\\
+\hllin{\ \ \ 19\ }\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!\ Good\ Morning!"}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+if several slots connected to a same signal at the same time, they share same priority \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{struct\ }\hlstd{good}\\
+\hllin{\ \ \ \ 7\ }\hlopt{\{}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()}\hlstd{\ \ }\hlopt{}\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"\ Good\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 11\ }\hlstd{\\
+\hllin{\ \ \ 12\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 13\ }\hlstd{\\
+\hllin{\ \ \ 14\ }sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 15\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{good}\hlopt{(),\ {[}{]}()\{}\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\}\ );}\\
+\hllin{\ \ \ 16\ }\hlstd{}\\
+\hllin{\ \ \ 17\ }\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!\ Good\ Morning!"}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+
+\subsection{Passing values to and from slots}
+
+\paragraph{Signals can propagate arguments to each of the slots they call.\\}
+most code of the example below is borrowed from boost::signals \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{}\hlkwd{print\textunderscore sum}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlstd{\ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"The\ sum\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{x}\hlopt{+}\hlstd{y\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\\
+\hllin{\ \ \ \ 9\ }\hlkwb{void\ }\hlstd{}\hlkwd{print\textunderscore product}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 11\ }\hlstd{}\hlstd{\ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"The\ product\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{x}\hlopt{{*}}\hlstd{y\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;}\\
+\hllin{\ \ \ 12\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 13\ }\hlstd{}\\
+\hllin{\ \ \ 14\ }\hlkwb{void\ }\hlstd{}\hlkwd{print\textunderscore difference}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)}\\
+\hllin{\ \ \ 15\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"The\ difference\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{x}\hlopt{{-}}\hlstd{y\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 18\ }\hlstd{}\\
+\hllin{\ \ \ 19\ }\hlkwb{void\ }\hlstd{}\hlkwd{print\textunderscore quotient}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)}\\
+\hllin{\ \ \ 20\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 21\ }\hlstd{}\hlstd{\ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"The\ quotient\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{x}\hlopt{/}\hlstd{y\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;}\\
+\hllin{\ \ \ 22\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 23\ }\hlstd{}\\
+\hllin{\ \ \ 24\ }\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ 25\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 26\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 27\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{print\textunderscore sum}\hlopt{,\ }\hlstd{print\textunderscore product}\hlopt{,\ }\hlstd{print\textunderscore difference}\hlopt{,\ }\hlstd{print\textunderscore quotient\ }\hlopt{);}\\
+\hllin{\ \ \ 28\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{3}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{4\ }\hlstd{}\hlopt{);\ }\\
+\hllin{\ \ \ 29\ }\hlstd{\\
+\hllin{\ \ \ 30\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 31\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 32\ }\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+This programe will print the following  
+\begin{shaded}
+{\small
+\ttfamily
+~\\
+\hllin{\ \ \ \ \ }         The sum is 7 \\
+\hllin{\ \ \ \ \ }         The product is 12 \\ 
+\hllin{\ \ \ \ \ }         The difference is -1 \\
+\hllin{\ \ \ \ \ }         The quotient is 0.75 \\
+\normalfont
+}
+\end{shaded}
+
+This means any values that are given to sig when it is called like a function are passed to each of the slots.
+
+\subsection{Collecting slots return values}
+
+\paragraph{Just as slots can receive arguments, they can also return values. Following STL's patterns, In signal0x, we collect return values by forwarding them into an output iterator \\}
+
+Slightly modify previous example, we redirect the return values to an ostream iterator \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$iterator$>$}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\\
+\hllin{\ \ \ \ 5\ }\hlkwb{float\ }\hlstd{}\hlkwd{sum}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)\ \{\ }\hlstd{}\hlkwa{return\ }\hlstd{x}\hlopt{+}\hlstd{y}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{float\ }\hlstd{}\hlkwd{product}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)\ \{\ }\hlstd{}\hlkwa{return\ }\hlstd{x}\hlopt{{*}}\hlstd{y}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlkwb{float\ }\hlstd{}\hlkwd{difference}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)\ \{\ }\hlstd{}\hlkwa{return\ }\hlstd{x}\hlopt{{-}}\hlstd{y}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlkwb{float\ }\hlstd{}\hlkwd{quotient}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{float\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{float\ }\hlstd{y}\hlopt{)\ \{\ }\hlstd{}\hlkwa{return\ }\hlstd{x}\hlopt{/}\hlstd{y}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\\
+\hllin{\ \ \ 10\ }\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ 11\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 12\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{float}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 13\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{sum\ }\hlopt{);}\\
+\hllin{\ \ \ 14\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{product\ }\hlopt{);}\\
+\hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{difference\ }\hlopt{);}\\
+\hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{quotient\ }\hlopt{);}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{(\ }\hlstd{std}\hlopt{::}\hlstd{ostream\textunderscore iterator}\hlopt{$<$}\hlstd{}\hlkwb{float}\hlstd{}\hlopt{$>$(}\hlstd{std}\hlopt{::}\hlstd{cout}\hlopt{,\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{),\ }\hlstd{}\hlnum{3.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{4.0\ }\hlstd{}\hlopt{);\ }\\
+\hllin{\ \ \ 18\ }\hlstd{\\
+\hllin{\ \ \ 19\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 20\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 21\ }\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+This programe will print the following  
+\begin{shaded}
+{\small
+\ttfamily
+~\\
+7 \\
+12 \\
+-1 \\
+0.75 
+\normalfont
+}
+\end{shaded}
+
+Please note here, if we connect all slots at the same time, they will be combined, and only returning the last function's return value; This means if the connection is written as \\
+
+\noindent
+\ttfamily
+\hlstd{\hllin{\ \ \ \ 1\ }}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{sum}\hlopt{,\ }\hlstd{product}\hlopt{,\ }\hlstd{difference}\hlopt{,\ }\hlstd{quotient\ }\hlopt{);}\\
+\mbox{}
+\normalfont
+\normalsize
+
+only \hlstd{0.75} will be printed.
+
+
+\subsection{Disconnecting slots}
+
+\paragraph{Some times slots are only used to receive a few events and are then disconnected, so the programmer needs control to decide when a slot should no longer be connected.\\}
+
+an example \\
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$iterator$>$}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\\
+\hllin{\ \ \ \ 5\ }\hlkwb{void\ }\hlstd{}\hlkwd{hello}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{world}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\\
+\hllin{\ \ \ \ 8\ }\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 11\ }\hlstd{\\
+\hllin{\ \ \ 12\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{con\ }\hlopt{=\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 13\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//\ this\ will\ print\ "Hello\ World!"}\\
+\hllin{\ \ \ 14\ }\hlstd{\\
+\hllin{\ \ \ 15\ }}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(\ }\hlstd{con\ }\hlopt{);\ }\hlstd{}\hlslc{//\ disconnect\ the\ connection}\\
+\hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//\ nothing\ happens\ here}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{\\
+\hllin{\ \ \ 18\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 19\ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 20\ }\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+\subsection{Blocking slot}
+temp empty
+   
+\subsection{Scoped connections}
+\paragraph{The signal0x::scope\_connection class references a signal/slot connection that will be disconnected when the scoped\_connection class goes out of scope. \\}
+
+an example \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$cstddef$>$}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\\
+\hllin{\ \ \ \ 5\ }\hlkwc{template}\hlstd{}\hlopt{$<$\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwb{size\textunderscore t\ }\hlstd{N\ }\hlopt{$>$}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{struct\ }\hlstd{f}\\
+\hllin{\ \ \ \ 7\ }\hlopt{\{}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()\ }\hlstd{}\hlkwb{const\ }\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{functor\ f$<$"}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{N\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"$>$\ called."}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 11\ }\hlstd{}\\
+\hllin{\ \ \ 12\ }\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ 13\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 14\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{f}\hlopt{$<$}\hlstd{}\hlnum{0}\hlstd{}\hlopt{$>$()\ );}\\
+\hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{signal\ triggered\ out\ of\ scope."}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\\
+\hllin{\ \ \ 18\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 19\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{scope\textunderscore connection}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{}\hlkwd{s}\hlstd{}\hlopt{(\ }\hlstd{sig}\hlopt{,\ }\hlstd{f}\hlopt{$<$}\hlstd{}\hlnum{1}\hlstd{}\hlopt{$>$()\ );}\\
+\hllin{\ \ \ 20\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{signal\ triggered\ in\ scope."}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 21\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\\
+\hllin{\ \ \ 22\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 23\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{signal\ triggered\ out\ of\ scope."}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 24\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\\
+\hllin{\ \ \ 25\ }\hlstd{\\
+\hllin{\ \ \ 26\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 27\ }\hlstd{}\hlopt{\}}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+this program will produce 
+\begin{shaded}
+{\small
+\ttfamily
+~\\
+signal triggered out of scope. \\
+functor f<0> called. \\
+signal triggered in scope. \\
+functor f<0> called. \\
+functor f<1> called. \\
+signal triggered out of scope. \\
+functor f<0> called 
+\normalfont
+}
+\end{shaded}
 
 
 

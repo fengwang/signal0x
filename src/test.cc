@@ -90,9 +90,10 @@ int main()
     //dd.emit( std::ostream_iterator<double>(std::cout,"\t"), 1.0 );
 
     dd.disconnect_all();
+    std::cout << "\n[[disconnecting all]]\n" << std::endl;
+    dd( 1.0);
 
     auto con = dd.connect( d1, d2, d3, std::bind(&d4::do_d4, &d4_, std::placeholders::_1), [](double d){ std::cout << "\nlamda fun called" << std::endl; return d; } );
-
     std::cout << "\n[[chain function as slot]]\n" << std::endl;
     dd( 2.0);
 
