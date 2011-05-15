@@ -31,58 +31,45 @@ namespace signal0x
         typedef std::mutex                                                      mutex_type;
         typedef std::lock_guard<mutex_type>                                     lock_guard_type;
     private:
-        bool                                                    is_blocked_;
+        priority_connection_subscriber_type                     pcst_blocked_;
         priority_connection_subscriber_type                     pcst_;
         mutable mutex_type                                      m_;
 
     public:
-        signal() : is_blocked_(false) {}
-        signal( const self_type& other ) : is_blocked_( other.is_blocked_ ), 
-                                           pcst_( other.pcst_ ) {}
-        signal( self_type&& other ) : is_blocked_( std::move(other.is_blocked_) ), 
-                                      pcst_( std::move(other.pcst_) ) {}
-        // 1)  lock both mutexes safely 
-        // 2)  adopt the ownership into the std::lock_guard instances  
-        //     to ensure the locks are released safely at the end of the function.
+        signal() {}
+        signal( const self_type& other ) : pcst_blocked_( other.pcst_blocked_ ), pcst_( other.pcst_ ) {}
+        signal( self_type&& other ) : pcst_blocked_( std::move(other.pcst_blocked_) ), pcst_( std::move(other.pcst_) ) {}
+        
         self_type& 
         operator = ( const self_type& other )
-        {   // 1)
+        {   // 1)  lock both mutexes safely 
             std::lock( m_, other.m_); 
-            // 2)
+            // 2)  adopt the ownership into the std::lock_guard instances to ensure the locks are released safely at the end of the function.
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
-            is_blocked_ = other.is_blocked_;
+            pcst_blocked_ = other.pcst_blocked_;
             pcst_ = other.pcst_;
             return *this;
         }
         self_type& 
         operator = ( self_type&& other )
         {
-            is_blocked_ = std::move(other.is_blocked_);
+            pcst_blocked_ = std::move(other.pcst_blocked_);
             pcst_ = std::move(other.pcst_);
             return *this;
         }
 
-        template< typename F >
-        const connection_type
-        connect(const F& f, const priority_type w = std::numeric_limits<priority_type>::max() )
-        {
-            auto&c =  singleton<connection_type>::instance();
-            auto const cc = c++;
-            lock_guard_type l( m_ );      
-            (pcst_[w]).insert( std::make_pair( cc, (function_type)(f) ) );
-            return cc;
-        }
-
-        template< typename F >
-        const connection_type
-        connect( const priority_type w, const F& f )
-        { return connect( f, w ); }
-
         template< typename... F >
         const connection_type
         connect( const priority_type w, const F&... f )
-        { return connect( chain_function<R, Args...>()(f...), w ); }
+        { 
+            auto ff =  chain_function<R, Args...>()(f...); 
+            auto&c =  singleton<connection_type>::instance();
+            auto const cc = c++;
+            lock_guard_type l( m_ );      
+            (pcst_[w]).insert( std::make_pair( cc, ff ) );
+            return cc;
+        }
 
         template< typename... F >
         const connection_type
@@ -95,6 +82,8 @@ namespace signal0x
             lock_guard_type l( m_ );      
             for ( auto& i : pcst_ )
                     i.second.erase( c );
+            for ( auto& i : pcst_blocked_ )
+                    i.second.erase( c );
         }
 
         void 
@@ -102,13 +91,13 @@ namespace signal0x
         { 
             lock_guard_type l( m_ );      
             pcst_.clear(); 
+            pcst_blocked_.clear(); 
         }
 
         void 
         operator()( Args... args ) const
         { 
             lock_guard_type l( m_ );      
-            if ( is_blocked_ ) return;
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
                     (j.second)( args... );
@@ -119,32 +108,40 @@ namespace signal0x
         operator() ( Output_Iterator o, Args... args ) const
         {
             lock_guard_type l( m_ );      
-            if ( is_blocked_ ) return o;
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
                     *o++ = (j.second)( args... );
             return o;
         }
 
-        void 
-        block() 
-        { 
+        bool 
+        block( const connection_type con )
+        {
             lock_guard_type l( m_ );      
-            is_blocked_ = true; 
-        }
-
-        void 
-        unblock()
-        { 
-            lock_guard_type l( m_ );      
-            is_blocked_ = false; 
+            for ( auto i : pcst_ )
+                for ( auto j : i.second )
+                {  
+                    if ( j.first != con ) continue;
+                    pcst_blocked_[i.first].insert( j );
+                    pcst_[i.first].erase( con );
+                    return true; 
+                }
+            return false;
         }
 
         bool 
-        is_blocked() const 
-        { 
+        unblock( const connection_type con )
+        {
             lock_guard_type l( m_ );      
-            return is_blocked_; 
+            for ( auto i : pcst_blocked_ )
+                for ( auto j : i.second )
+                {  
+                    if ( j.first != con ) continue;
+                    pcst_[i.first].insert( j );
+                    pcst_blocked_[i.first].erase( con );
+                    return true; 
+                }
+            return false;
         }
 
         void 
@@ -154,7 +151,7 @@ namespace signal0x
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
             std::swap( pcst_, other.pcst_ );
-            std::swap( is_blocked_, other.is_blocked_ );
+            std::swap( pcst_blocked_, other.pcst_blocked_ );
         }
 
     };//struct signal
@@ -174,18 +171,15 @@ namespace signal0x
     disconnect( const connection_type& con, signal<R, Arg...>& sig )
     { sig.disconnect( con ); }
 
-    template< typename R, typename... Arg, typename F >
+    template<typename S, typename... F>
     connection_type
-    connect( signal<R, Arg...>& sig, F f, 
-             const typename signal<R, Arg...>::priority_type w = std::numeric_limits<typename signal<R, Arg...>::priority_type>::max() )
-    { return sig.connect( f, w ); }
+    connect( const typename S::priotity_type w, S& s, const F&... f )
+    { return s.connect( w, f... ); }
 
-    template< typename R, typename... Arg, typename F >
+    template<typename S, typename... F>
     connection_type
-    connect( F f, signal<R, Arg...>& sig, 
-             const typename signal<R, Arg...>::priority_type w = std::numeric_limits<typename signal<R, Arg...>::priority_type>::max() )
-    { return sig.connect( f, w ); }
-
+    connect(  S& s, const F&... f )
+    { return connect( std::numeric_limits<typename S::priority_type>::max(), s, f... ); }
 
     template< typename R, typename... Args >
     struct scope_connection
@@ -196,17 +190,17 @@ namespace signal0x
         typedef typename signal_type::priority_type     priority_type;
         typedef typename signal_type::function_type     function_type;
 
-        template< typename F >
-        scope_connection( signal_type& sig, F&& f, 
-                          const priority_type w = std::numeric_limits<priority_type>::max() ) : sig_(sig)
-        { con_ = sig_.connect(std::forward<function_type>(f), w); }
+        template<typename... F>
+        scope_connection( const priority_type w, signal_type& sig,  const F&... f ) : sig_(sig)
+        { con_ = sig_.connect( w, f...); }
 
-        const connection_type
-        connection() const 
-        { return con_; }
+        template<typename... F>
+        scope_connection( signal_type& sig,  const F&... f ) : sig_(sig)
+        { con_ = sig_.connect( std::numeric_limits<priority_type>::max(), f...); }
 
-        ~scope_connection()
-        { sig_.disconnect(con_); }
+        const connection_type connection() const { return con_; }
+
+        ~scope_connection() { sig_.disconnect(con_); }
 
         scope_connection( const self_type& ) = delete;
         self_type& operator = ( const self_type& ) = delete;

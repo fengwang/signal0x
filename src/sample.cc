@@ -94,23 +94,23 @@ int main()
     sig(6);
 
     std::cout << "\n\n[[connection with priority]]\n";
-    sig.connect( [](int i) { std::cout << i << "\n"; return i; } );
-    sig.connect( [](int i) { std::cout << i+10 << "\n"; return i; }, 10 );
-    sig.connect( [](int i) { std::cout << i+20 << "\n"; return i; }, 20 );
-    sig.connect( [](int i) { std::cout << i-10 << "\n"; return i; }, -10 );
-    sig.connect( [](int i) { std::cout << i-20 << "\n"; return i; }, -20 );
+    auto con = sig.connect(3, [](int i) { std::cout << i << "\n"; return i; });
+    sig.connect(2, [](int i) { std::cout << i+10 << "\n"; return i; } );
+    sig.connect(3, [](int i) { std::cout << i+20 << "\n"; return i; } );
+    sig.connect(4, [](int i) { std::cout << i-10 << "\n"; return i; } );
+    sig.connect(5, [](int i) { std::cout << i-20 << "\n"; return i; } );
 
-    sig(7);
+    sig(0);
 
     //block the signal
     std::cout << "\n\n[[block the signal]]\n\n";
-    sig.block();
-    sig(8);
+    sig.block(con);
+    sig(0);
 
     //unblock the signal
     std::cout << "\n\n[[unblock the signal]]\n\n";
-    sig.unblock();
-    sig(9);
+    sig.unblock(con);
+    sig(0);
 
 
     std::cout << "\n\n[[disconnect all]]\n\n";

@@ -26,19 +26,9 @@ namespace signal0x
             const function_type f = chain_function<R, Args...>()(f_);
             const function_type g = chain_function<R, Args...>()(fs_...);
             return [f, g](Args... args) -> return_type { f(args...); return g(args...); };
-            //const function_type ans = [f, g](Args... args) -> return_type { f(args...); return g(args...); };
-            //return ans;
         }
 
     };
-
-    template< typename R, typename... Args, typename... Fs >
-    const typename chain_function<R, Args...>::funciton_type
-    make_chain_function( const Fs&... fs )
-    {
-        return chain_function<R, Args...>()(fs...);
-    }
-
 
 }//namespace signal0x
 

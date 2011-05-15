@@ -54,8 +54,8 @@ int main()
     hello h;
 
     connection_type c1 = s.connect( hello() );
-    connection_type c2 = s.connect( h, 1 );
-    connection_type c3 = s.connect( world, 2);
+    connection_type c2 = s.connect( 1, h );
+    connection_type c3 = s.connect( 2, world);
 
     s();
     std::cout << "\n\n";

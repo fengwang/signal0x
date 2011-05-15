@@ -23,5 +23,7 @@ int main()
     std::cout << "\nsignal triggered out of scope.";
     sig();
 
+    std::cout << "\n";
+
     return 0;
 }
