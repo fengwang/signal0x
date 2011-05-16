@@ -224,33 +224,41 @@ for example: \\
 
 \subsubsection{Ordering multiple slots call priorities}
 
-\paragraph{Connection could be created with priority argument, which means slots can be called in a specified order we set. \\}
+\paragraph{Connection could be created with priority argument, which means slots can be called in a specified order we set. By default, if no priority argument provided, the connected slot will be the last one invoked.\\}
 an example: \\
 
 \noindent
 \ttfamily
-\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
-\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
-\hllin{\ \ \ \ 3\ }\hlstd{}\\
-\hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
-\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
-\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{struct\ }\hlstd{good}\\
-\hllin{\ \ \ \ 7\ }\hlopt{\{}\\
-\hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()}\hlstd{\ \ }\hlopt{}\hlstd{}\hlkwb{const}\\
-\hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"\ Good\ "}\hlstd{}\hlopt{;\ \}}\\
-\hllin{\ \ \ 10\ }\hlstd{}\hlopt{\};}\\
-\hllin{\ \ \ 11\ }\hlstd{\\
-\hllin{\ \ \ 12\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
-\hllin{\ \ \ 13\ }\hlstd{\\
-\hllin{\ \ \ 14\ }sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
-\hllin{\ \ \ 15\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\\
-\hllin{\ \ \ 16\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{3}\hlstd{}\hlopt{,\ {[}{]}()\{}\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\}\ );}\\
-\hllin{\ \ \ 17\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwd{good}\hlstd{}\hlopt{(),\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{);}\\
-\hllin{\ \ \ 18\ }\hlstd{}\\
-\hllin{\ \ \ 19\ }\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!\ Good\ Morning!"}\hlstd{}\\
+\hlstd{}\hlppc{\#include\ $<$signal.hpp$>$}\hspace*{\fill}\\
+\hlstd{}\hlppc{\#include\ $<$iostream$>$}\hspace*{\fill}\\
+\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\hspace*{\fill}\\
+\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{world}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\hspace*{\fill}\\
+\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{good}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Good\ "}\hlstd{}\hlopt{;\ \}}\hspace*{\fill}\\
+\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{morning}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\ \}}\hspace*{\fill}\\
+\hlstd{}\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{hello\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{morning\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{2}\hlstd{}\hlopt{,\ }\hlstd{good\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hlstd{}\hspace*{\fill}\\
 \mbox{}
 \normalfont
 \normalsize
+
+this program will produce
+\begin{shaded}
+{\small
+\ttfamily
+~\\
+\hllin{\ \ \ \ \ }         Hello World!Good Morning! \\
+\normalfont
+}
+\end{shaded}
+
 
 if several slots connected to a same signal at the same time, they share same priority \\
 
@@ -382,7 +390,7 @@ This programe will print the following
 }
 \end{shaded}
 
-Please note here, if we connect all slots at the same time, they will be combined, and only returning the last function's return value; This means if the connection is written as \\
+Please note here, if we connect all slots at the same time, they will be combined, only returning the last function's result; This means if the connection is rewritten as \\
 
 \noindent
 \ttfamily
@@ -425,9 +433,39 @@ an example \\
 \normalfont
 \normalsize
 
-\subsection{Blocking slot}
-temp empty
-   
+\subsection{Blocking/Unblocking slot}
+\paragraph{Slots can be temporarily "blocked", meaning that they will be ignored when the signal is invoked but have not been disconnected. The block member function temporarily blocks a slot, which can be unblocked via unblock.\\}
+
+Here is an example of block/unblock slot: \\
+
+\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{world}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{good}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Good\ "}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{morning}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\ \}}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 10\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{con\ }\hlopt{=\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world}\hlopt{,\ }\hlstd{good}\hlopt{,\ }\hlstd{morning\ }\hlopt{);}\\
+\hllin{\ \ \ 11\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlopt{}\hlstd{}\hlslc{//prints\ "Hello\ World!Good\ Morning!"}\\
+\hllin{\ \ \ 12\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{block}\hlstd{}\hlopt{(}\hlstd{con}\hlopt{);}\hlstd{\ \ \ \ \ }\hlopt{}\hlstd{}\hlslc{//connection\ blocked}\\
+\hllin{\ \ \ 13\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlopt{}\hlstd{}\hlslc{//prints\ nothing}\\
+\hllin{\ \ \ 14\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{unblock}\hlstd{}\hlopt{(}\hlstd{con}\hlopt{);}\hlstd{\ \ \ }\hlopt{}\hlstd{}\hlslc{//connection\ unblocked}\\
+\hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlopt{}\hlstd{}\hlslc{//prints\ "Hello\ World!Good\ Morning!"}\\
+\hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlopt{\}}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
+
+
+
+
+
+
 \subsection{Scoped connections}
 \paragraph{The signal0x::scope\_connection class references a signal/slot connection that will be disconnected when the scoped\_connection class goes out of scope. \\}
 

@@ -65,8 +65,8 @@ namespace signal0x
         { 
             auto ff =  chain_function<R, Args...>()(f...); 
             auto&c =  singleton<connection_type>::instance();
-            auto const cc = c++;
             lock_guard_type l( m_ );      
+            auto const cc = c++;
             (pcst_[w]).insert( std::make_pair( cc, ff ) );
             return cc;
         }
