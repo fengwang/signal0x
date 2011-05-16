@@ -18,11 +18,8 @@ namespace signal0x
         private:
             struct constuctor
             {
-                constuctor()
-                { self_type::instance(); }
-
-                inline void 
-                null_action() const { }
+                constuctor() { self_type::instance(); }
+                inline void null_action() const { }
             };
 
             static constuctor constuctor_;

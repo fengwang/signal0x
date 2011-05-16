@@ -102,7 +102,8 @@
 \item connect a slot, the \hlkwd{hello\_world} function, to the signal using the \hlkwd{connect} method
 \item the signal is triggered, which in turns invokes \hlkwd{hello\_world()} to print "Hello World.".
 \end{enumerate}
-
+\paragraph{Signals represent callbacks with multiple targets, and are also called publisher or events in similar systems.}
+\paragraph{Slots are callback receivers (also called event targets or subscribers), which connect to signals and will be called when the signal is "emitted."}
 
 \subsubsection{Slots}
 
@@ -525,8 +526,72 @@ functor f<0> called
 
 
 \subsection{Examples}
-
-
+%\noindent
+\ttfamily
+\hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
+\hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$string$>$}\\
+\hllin{\ \ \ \ 4\ }\hlstd{}\hlppc{\#include\ $<$functional$>$}\\
+\hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{struct\ }\hlstd{Document}\\
+\hllin{\ \ \ \ 6\ }\hlopt{\{}\\
+\hllin{\ \ \ \ 7\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{typedef\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{,}\hlstd{}\hlkwb{bool}\hlstd{}\hlopt{$>$}\hlstd{\ \ }\hlopt{}\hlstd{signal\textunderscore t}\hlopt{;}\\
+\hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{typedef\ }\hlstd{signal\textunderscore t}\hlopt{::}\hlstd{connection\textunderscore type}\hlstd{\ \ }\hlstd{connection\textunderscore t}\hlopt{;}\\
+\hllin{\ \ \ \ 9\ }\hlstd{\\
+\hllin{\ \ \ 10\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{template}\hlstd{}\hlopt{$<$}\hlstd{typename\ F}\hlopt{$>$}\\
+\hllin{\ \ \ 11\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{connection\textunderscore t\ }\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{const\ }\hlstd{F}\hlopt{\&\ }\hlstd{subscriber}\hlopt{)}\\
+\hllin{\ \ \ 12\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{}\hlkwa{return\ }\hlstd{m\textunderscore sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(}\hlstd{subscriber}\hlopt{);\ \}}\\
+\hllin{\ \ \ 13\ }\hlstd{\\
+\hllin{\ \ \ 14\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{connection\textunderscore t\ subscriber}\hlopt{)}\\
+\hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{m\textunderscore sig}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{subscriber}\hlopt{);\ \}}\\
+\hllin{\ \ \ 16\ }\hlstd{\\
+\hllin{\ \ \ 17\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{append}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{const\ char}\hlstd{}\hlopt{{*}\ }\hlstd{s}\hlopt{)}\\
+\hllin{\ \ \ 18\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{m\textunderscore text\ }\hlopt{+=\ }\hlstd{s}\hlopt{;\ }\hlstd{}\hlkwd{m\textunderscore sig}\hlstd{}\hlopt{(}\hlstd{}\hlkwa{true}\hlstd{}\hlopt{);\ \}}\\
+\hllin{\ \ \ 19\ }\hlstd{\\
+\hllin{\ \ \ 20\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{std}\hlopt{::}\hlstd{string}\hlopt{\&\ }\hlstd{}\hlkwd{getText}\hlstd{}\hlopt{()\ }\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ 21\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{}\hlkwa{return\ }\hlstd{m\textunderscore text}\hlopt{;\ \}}\\
+\hllin{\ \ \ 22\ }\hlstd{}\hlkwc{private}\hlstd{}\hlopt{:}\\
+\hllin{\ \ \ 23\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal\textunderscore t}\hlstd{\ \ \ \ }\hlstd{m\textunderscore sig}\hlopt{;}\\
+\hllin{\ \ \ 24\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{string\ m\textunderscore text}\hlopt{;}\\
+\hllin{\ \ \ 25\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 26\ }\hlstd{}\hlkwb{struct\ }\hlstd{View}\\
+\hllin{\ \ \ 27\ }\hlopt{\{}\\
+\hllin{\ \ \ 28\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{View}\hlstd{}\hlopt{(}\hlstd{Document}\hlopt{\&\ }\hlstd{m}\hlopt{)\ :\ }\hlstd{}\hlkwd{m\textunderscore document}\hlstd{}\hlopt{(}\hlstd{m}\hlopt{)\ \{\ }\hlstd{m\textunderscore connection\ }\hlopt{=\ }\hlstd{m\textunderscore document}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(}\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{bind}\hlstd{}\hlopt{(\&}\hlstd{View}\hlopt{::}\hlstd{refresh}\hlopt{,\ }\hlstd{}\hlkwa{this}\hlstd{}\hlopt{,\ }\hlstd{std}\hlopt{::}\hlstd{placeholders}\hlopt{::}\hlstd{\textunderscore 1}\hlopt{));\ \}}\\
+\hllin{\ \ \ 29\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{virtual\ }\hlstd{}\hlopt{$\sim$}\hlstd{}\hlkwd{View}\hlstd{}\hlopt{()\ \{\ }\hlstd{m\textunderscore document}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{m\textunderscore connection}\hlopt{);\ \}}\\
+\hllin{\ \ \ 30\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{virtual\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{refresh}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{bool\ }\hlstd{bExtended}\hlopt{)\ }\hlstd{}\hlkwb{const\ }\hlstd{}\hlopt{=\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 31\ }\hlstd{}\hlkwc{protected}\hlstd{}\hlopt{:}\\
+\hllin{\ \ \ 32\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{Document}\hlopt{\&}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlopt{}\hlstd{m\textunderscore document}\hlopt{;}\\
+\hllin{\ \ \ 33\ }\hlstd{}\hlkwc{private}\hlstd{}\hlopt{:}\\
+\hllin{\ \ \ 34\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{Document}\hlopt{::}\hlstd{connection\textunderscore t}\hlstd{\ \ }\hlstd{m\textunderscore connection}\hlopt{;}\\
+\hllin{\ \ \ 35\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 36\ }\hlstd{}\hlkwb{struct\ }\hlstd{TextView\ }\hlopt{:\ }\hlstd{}\hlkwc{public\ }\hlstd{View}\\
+\hllin{\ \ \ 37\ }\hlopt{\{}\\
+\hllin{\ \ \ 38\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{TextView}\hlstd{}\hlopt{(}\hlstd{Document}\hlopt{\&\ }\hlstd{doc}\hlopt{)\ :\ }\hlstd{}\hlkwd{View}\hlstd{}\hlopt{(}\hlstd{doc}\hlopt{)\ \{\}}\\
+\hllin{\ \ \ 39\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{virtual\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{refresh}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{bool\ }\hlstd{bExtended}\hlopt{)\ }\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ 40\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"TextView:\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{m\textunderscore document}\hlopt{.}\hlstd{}\hlkwd{getText}\hlstd{}\hlopt{()\ $<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;\ \}}\\
+\hllin{\ \ \ 41\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 42\ }\hlstd{}\hlkwb{struct\ }\hlstd{HexView\ }\hlopt{:\ }\hlstd{}\hlkwc{public\ }\hlstd{View}\\
+\hllin{\ \ \ 43\ }\hlopt{\{}\\
+\hllin{\ \ \ 44\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{HexView}\hlstd{}\hlopt{(}\hlstd{Document}\hlopt{\&\ }\hlstd{doc}\hlopt{)\ :\ }\hlstd{}\hlkwd{View}\hlstd{}\hlopt{(}\hlstd{doc}\hlopt{)\ \{\}}\\
+\hllin{\ \ \ 45\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{virtual\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{refresh}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{bool\ }\hlstd{bExtended}\hlopt{)\ }\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ 46\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 47\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{std}\hlopt{::}\hlstd{string}\hlopt{\&}\hlstd{\ \ }\hlopt{}\hlstd{s\ }\hlopt{=\ }\hlstd{m\textunderscore document}\hlopt{.}\hlstd{}\hlkwd{getText}\hlstd{}\hlopt{();}\\
+\hllin{\ \ \ 48\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"HexView:"}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 49\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlopt{(}\hlstd{std}\hlopt{::}\hlstd{string}\hlopt{::}\hlstd{const\textunderscore iterator\ it\ }\hlopt{=\ }\hlstd{s}\hlopt{.}\hlstd{}\hlkwd{begin}\hlstd{}\hlopt{();\ }\hlstd{it\ }\hlopt{!=\ }\hlstd{s}\hlopt{.}\hlstd{}\hlkwd{end}\hlstd{}\hlopt{();\ ++}\hlstd{it}\hlopt{)}\\
+\hllin{\ \ \ 50\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{'\ '}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{hex\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwa{static\textunderscore cast}\hlstd{}\hlopt{$<$}\hlstd{}\hlkwb{int}\hlstd{}\hlopt{$>$({*}}\hlstd{it}\hlopt{);}\\
+\hllin{\ \ \ 51\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{std}\hlopt{::}\hlstd{endl}\hlopt{;}\\
+\hllin{\ \ \ 52\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\}}\\
+\hllin{\ \ \ 53\ }\hlstd{}\hlopt{\};}\\
+\hllin{\ \ \ 54\ }\hlstd{}\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{int\ }\hlstd{argc}\hlopt{,\ }\hlstd{}\hlkwb{char}\hlstd{}\hlopt{{*}\ }\hlstd{argv}\hlopt{{[}{]})}\\
+\hllin{\ \ \ 55\ }\hlstd{}\hlopt{\{}\\
+\hllin{\ \ \ 56\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{Document}\hlstd{\ \ \ \ }\hlstd{doc}\hlopt{;}\\
+\hllin{\ \ \ 57\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{TextView}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{v1}\hlstd{}\hlopt{(}\hlstd{doc}\hlopt{);}\\
+\hllin{\ \ \ 58\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{HexView}\hlstd{\ \ \ \ \ }\hlstd{}\hlkwd{v2}\hlstd{}\hlopt{(}\hlstd{doc}\hlopt{);}\\
+\hllin{\ \ \ 59\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{doc}\hlopt{.}\hlstd{}\hlkwd{append}\hlstd{}\hlopt{(}\hlstd{argc\ }\hlopt{==\ }\hlstd{}\hlnum{2\ }\hlstd{?\ argv}\hlopt{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlopt{{]}\ :\ }\hlstd{}\hlstr{"Hello\ world!"}\hlstd{}\hlopt{);}\\
+\hllin{\ \ \ 60\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 61\ }\hlstd{}\hlopt{\}}\hlstd{}\\
+\mbox{}
+\normalfont
+\normalsize
 
 \section{Comparison With Boost::signals and sigc::signal}
 \subsection{Grammar Comparison}
