@@ -30,10 +30,6 @@ namespace signal0x
         typedef std::map<priority_type, associate_connection_subscriber_type>   priority_connection_subscriber_type;
         typedef std::mutex                                                      mutex_type;
         typedef std::lock_guard<mutex_type>                                     lock_guard_type;
-    private:
-        priority_connection_subscriber_type                     pcst_blocked_;
-        priority_connection_subscriber_type                     pcst_;
-        mutable mutex_type                                      m_;
 
     public:
         signal() {}
@@ -43,7 +39,7 @@ namespace signal0x
         self_type& 
         operator = ( const self_type& other )
         {   // 1)  lock both mutexes safely 
-            std::lock( m_, other.m_); 
+            std::lock( m_, other.m_ ); 
             // 2)  adopt the ownership into the std::lock_guard instances to ensure the locks are released safely at the end of the function.
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
@@ -81,9 +77,9 @@ namespace signal0x
         {
             lock_guard_type l( m_ );      
             for ( auto& i : pcst_ )
-                    i.second.erase( c );
+                    if ( i.second.erase( c ) ) return;
             for ( auto& i : pcst_blocked_ )
-                    i.second.erase( c );
+                    if ( i.second.erase( c ) ) return;
         }
 
         void 
@@ -100,7 +96,10 @@ namespace signal0x
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
-                    (j.second)( args... );
+                {
+                    try { (j.second)( args... ); }
+                    catch( std::bad_function_call& bfc ) {}
+                }
         }
 
         template<typename Output_Iterator>
@@ -110,7 +109,10 @@ namespace signal0x
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
-                    *o++ = (j.second)( args... );
+                {
+                    try { *o++ = (j.second)( args... ); }
+                    catch( std::bad_function_call& bfc ) {}
+                }
             return o;
         }
 
@@ -147,13 +149,17 @@ namespace signal0x
         void 
         swap( self_type& other )
         {
-            std::lock( m_, other.m_); 
+            std::lock( m_, other.m_ ); 
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
             std::swap( pcst_, other.pcst_ );
             std::swap( pcst_blocked_, other.pcst_blocked_ );
         }
 
+    private:
+        priority_connection_subscriber_type                     pcst_blocked_;
+        priority_connection_subscriber_type                     pcst_;
+        mutable mutex_type                                      m_;
     };//struct signal
 
     template< typename R, typename... Arg >

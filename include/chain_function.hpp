@@ -15,9 +15,7 @@ namespace signal0x
         template<typename F>
         const function_type
         operator()( const F& f_ ) const 
-        { 
-            return f_;
-        }
+        { return f_; }
 
         template<typename F, typename... Fs>
         const function_type
@@ -27,7 +25,6 @@ namespace signal0x
             const function_type g = chain_function<R, Args...>()(fs_...);
             return [f, g](Args... args) -> return_type { f(args...); return g(args...); };
         }
-
     };
 
 }//namespace signal0x
