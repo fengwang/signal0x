@@ -5,8 +5,8 @@
 
 namespace signal0x
 {
-    namespace signal0x_private
-    {
+  namespace signal0x_private
+  {
     //
     //  an example:
     //              void g(int);
@@ -26,7 +26,7 @@ namespace signal0x
     //                                          );
     //              //call the chain function
     //              int n;
-    //              chain(n); //this will call \lambda(n), g(n), (h())(n), i_(n) in turn
+    //              chain(n); //invoke \lambda(n), g(n), (h())(n), i_(n) in sequence
     //
     template< typename R, typename... Args >
     struct chain_function
@@ -48,7 +48,7 @@ namespace signal0x
             return [f, g](Args... args) -> return_type { f(args...); return g(args...); };
         }
     };
-    }//namespace signal0x_private
+  }//namespace signal0x_private
 }//namespace signal0x
 
 #endif//_CHAIN_FUNCTION_HPP_INCLUDED_SOFIHJ498UFSDKLJHKJFSDLKJSFDNMSIOHJ4EOIUSFDKJHEIUHSFDKJHEIUHSDKFJHSAKJFCKJHDKJHSFDDS
