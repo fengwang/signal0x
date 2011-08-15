@@ -47,6 +47,7 @@ namespace signal0x
             pcst_ = other.pcst_;
             return *this;
         }
+
         self_type& 
         operator = ( self_type&& other )
         {
@@ -59,12 +60,11 @@ namespace signal0x
         const connection_type
         connect( const priority_type w, const F&... f )
         { 
-            auto ff =  chain_function<R, Args...>()(f...); 
-            auto&c =  singleton<connection_type>::instance();
+            auto ff =  signal0x_private::chain_function<R, Args...>()(f...); 
+            auto& c =  signal0x_private::singleton<connection_type>::instance();
             lock_guard_type l( m_ );      
-            auto const cc = c++;
-            (pcst_[w]).insert( std::make_pair( cc, ff ) );
-            return cc;
+            (pcst_[w]).insert( std::make_pair( c, ff ) );
+            return c++;
         }
 
         template< typename... F >

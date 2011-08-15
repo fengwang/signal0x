@@ -28,9 +28,9 @@ int main()
 
     hello* h = new hello;
 
-    s.connect( *h, world );
-
     (*h).n = 2;
+
+    s.connect( *h, world );
 
     std::cout << "\nwith ptrs\n";
     s();
