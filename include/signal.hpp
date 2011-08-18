@@ -31,10 +31,13 @@ namespace signal0x
         typedef std::mutex                                                      mutex_type;
         typedef std::lock_guard<mutex_type>                                     lock_guard_type;
 
+    private://lock to get a consistent snapshot of the source
+        signal( const self_type& other, const lock_guard_type& ): pcst_blocked_( other.pcst_blocked_ ), pcst_( other.pcst_ ) {}
+        signal( self_type&& other, const lock_guard_type& ): pcst_blocked_( std::move(other.pcst_blocked_) ), pcst_( std::move(other.pcst_) ) {}
     public:
+        signal( const self_type& other ) : signal( other, lock_gurad_type(other.m_ ) ) {}
+        signal( self_type&& other ) : signal( other, lock_gurad_type(other.m_ ) ) {}
         signal() {}
-        signal( const self_type& other ) : pcst_blocked_( other.pcst_blocked_ ), pcst_( other.pcst_ ) {}
-        signal( self_type&& other ) : pcst_blocked_( std::move(other.pcst_blocked_) ), pcst_( std::move(other.pcst_) ) {}
         
         self_type& 
         operator = ( const self_type& other )
@@ -109,7 +112,7 @@ namespace signal0x
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
-                {   //save the funcitons' return values to an output iterator stream
+                {   //redirect the return values to a stream
                     try { *o++ = (j.second)( args... ); }
                     catch( std::bad_function_call& bfc ) {}
                 }
