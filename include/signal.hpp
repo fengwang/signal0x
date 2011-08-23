@@ -72,17 +72,17 @@ namespace signal0x
 
         template< typename... F >
         const connection_type
-        connect(  const F&... f ) //in case priority parameter not given, set it to the lowest
+        connect(  const F&... f ) //if priority parameter not given, set it to the lowest
         { return connect( std::numeric_limits<priority_type>::max(), f... ); }
 
         void 
         disconnect( const connection_type& c )
         {
             lock_guard_type l( m_ );      
-            for ( auto& i : pcst_ ) 
-                    if ( i.second.erase( c ) ) return;
+            for ( auto& i : pcst_ )//try move    //check cavity       //erase if empty      //break
+                    if ( i.second.erase( c ) ) { if(!i.second.size()) pcst_.erase(i.first); return; }
             for ( auto& i : pcst_blocked_ ) 
-                    if ( i.second.erase( c ) ) return;
+                    if ( i.second.erase( c ) ) { if(!i.second.size()) pcst_blocked_.erase(i.first); return; }
         }
 
         void 
@@ -99,24 +99,19 @@ namespace signal0x
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ ) //invoking functions according to their priorities
                 for ( auto const & j : i.second ) //if of same priority, invoking randomly
-                {
                     try { (j.second)( args... ); } //in case of bad function call, such like null ptr, just skip 
                     catch( std::bad_function_call& bfc ) {} 
-                }
         }
 
         template<typename Output_Iterator>
-        Output_Iterator
+        void
         operator() ( Output_Iterator o, Args... args ) const
         {
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
-                {   //redirect the return values to a stream
-                    try { *o++ = (j.second)( args... ); }
+                    try { *o++ = (j.second)( args... ); }//redirect the return values to a stream
                     catch( std::bad_function_call& bfc ) {}
-                }
-            return o;
         }
 
         bool 
@@ -176,7 +171,7 @@ namespace signal0x
     { sig.disconnect( con ); }
 
     template< typename R, typename... Arg >
-    void //overloading version of the function disconnection
+    void //overload disconnection
     disconnect( const connection_type& con, signal<R, Arg...>& sig )
     { sig.disconnect( con ); }
 

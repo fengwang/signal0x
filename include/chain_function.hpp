@@ -43,9 +43,9 @@ namespace signal0x
         const function_type
         operator()( const F& f_, const Fs&... fs_ ) const
         {
-            const function_type f = chain_function<R, Args...>()(f_);
-            const function_type g = chain_function<R, Args...>()(fs_...);
-            return [f, g](Args... args) -> return_type { f(args...); return g(args...); };
+            const auto f = chain_function<R, Args...>()(f_);
+            const auto g = chain_function<R, Args...>()(fs_...);
+            return [f, g](Args... args) { f(args...); return g(args...); };
         }
     };
   }//namespace signal0x_private

@@ -34,6 +34,15 @@ int main()
     std::cout << "\n\nchain connection again.\n";
     sig();
 
+    std::cout << "\n\nchain connection.\n";
+    sig.connect( 12, f<99>() );
+    sig.connect( 13, f<100>() );
+    sig.connect( 14, f<111>() );
+    sig.connect( 15, f<112>() );
+    sig.connect( 16, f<113>() );
+    sig.connect( 17, f<114>() );
+    sig();
+
     return 0;
 }
 
