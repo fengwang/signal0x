@@ -54,6 +54,7 @@ namespace signal0x
         self_type& 
         operator = ( self_type&& other )
         {
+            lock_guard_type l( m_ );      
             pcst_blocked_ = std::move(other.pcst_blocked_);
             pcst_ = std::move(other.pcst_);
             return *this;
@@ -102,6 +103,10 @@ namespace signal0x
                 for ( auto const & j : i.second )
                     (j.second)( args... );
         }
+
+        void 
+        emit( Args... args ) const
+        { operator()(args...); }
 
         template<typename Output_Iterator>
         Output_Iterator
