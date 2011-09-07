@@ -3,6 +3,8 @@
 
 namespace signal0x
 {
+    namespace signal0x_private
+    {
     template< typename T >
     struct singleton
     {
@@ -37,6 +39,7 @@ namespace signal0x
     template<typename T>
     typename singleton<T>::constuctor singleton<T>::constuctor_;    
 
+    }//namespace signal0x_private
 }//namespace signal0x
 
 #endif//_SINGLETON_HPP_INCLUDED_ODISFJ948ILDFJOIUIRFGDUISOIURKLJFLKJASLDKJOIUSDLKJSALKFJEOIUJSODIFUEROIUSFDLKJROIUSFDLKJF

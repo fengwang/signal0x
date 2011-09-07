@@ -526,6 +526,11 @@ functor f<0> called
 
 
 \subsection{Examples}
+
+Signals can be used to implement flexible Document-View architectures. The document will contain a signal to which each of the views can connect. The following Document class defines a simple text document that supports mulitple views. Note that it stores a single signal to which all of the views will be connected.
+
+
+
 %\noindent
 \ttfamily
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\

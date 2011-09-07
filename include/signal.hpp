@@ -30,20 +30,19 @@ namespace signal0x
         typedef std::map<priority_type, associate_connection_subscriber_type>   priority_connection_subscriber_type;
         typedef std::mutex                                                      mutex_type;
         typedef std::lock_guard<mutex_type>                                     lock_guard_type;
-    private:
-        priority_connection_subscriber_type                     pcst_blocked_;
-        priority_connection_subscriber_type                     pcst_;
-        mutable mutex_type                                      m_;
 
+    private://lock to get a consistent snapshot of the source
+        signal( const self_type& other, const lock_guard_type& ): pcst_blocked_( other.pcst_blocked_ ), pcst_( other.pcst_ ) {}
+        signal( self_type&& other, const lock_guard_type& ): pcst_blocked_( std::move(other.pcst_blocked_) ), pcst_( std::move(other.pcst_) ) {}
     public:
+        signal( const self_type& other ) : signal( other, lock_gurad_type(other.m_ ) ) {}
+        signal( self_type&& other ) : signal( other, lock_gurad_type(other.m_ ) ) {}
         signal() {}
-        signal( const self_type& other ) : pcst_blocked_( other.pcst_blocked_ ), pcst_( other.pcst_ ) {}
-        signal( self_type&& other ) : pcst_blocked_( std::move(other.pcst_blocked_) ), pcst_( std::move(other.pcst_) ) {}
         
         self_type& 
         operator = ( const self_type& other )
         {   // 1)  lock both mutexes safely 
-            std::lock( m_, other.m_); 
+            std::lock( m_, other.m_ ); 
             // 2)  adopt the ownership into the std::lock_guard instances to ensure the locks are released safely at the end of the function.
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
@@ -51,6 +50,7 @@ namespace signal0x
             pcst_ = other.pcst_;
             return *this;
         }
+
         self_type& 
         operator = ( self_type&& other )
         {
@@ -64,27 +64,26 @@ namespace signal0x
         const connection_type
         connect( const priority_type w, const F&... f )
         { 
-            auto ff =  chain_function<R, Args...>()(f...); 
-            auto&c =  singleton<connection_type>::instance();
-            lock_guard_type l( m_ );      
-            auto const cc = c++;
-            (pcst_[w]).insert( std::make_pair( cc, ff ) );
-            return cc;
+            auto ff =  signal0x_private::chain_function<R, Args...>()(f...);    //generate a function chain
+            auto& c =  signal0x_private::singleton<connection_type>::instance();//a global id generator to do connection representation 
+            lock_guard_type l( m_ );                                            
+            (pcst_[w]).insert( std::make_pair( c, ff ) );                       //save connection id and chain function to the table
+            return c++;                                                         //increase global id generator
         }
 
         template< typename... F >
         const connection_type
-        connect(  const F&... f )
+        connect(  const F&... f ) //if priority parameter not given, set it to the lowest
         { return connect( std::numeric_limits<priority_type>::max(), f... ); }
 
         void 
         disconnect( const connection_type& c )
         {
             lock_guard_type l( m_ );      
-            for ( auto& i : pcst_ )
-                    i.second.erase( c );
-            for ( auto& i : pcst_blocked_ )
-                    i.second.erase( c );
+            for ( auto& i : pcst_ )//try move    //check cavity       //erase if empty      //break
+                    if ( i.second.erase( c ) ) { if(!i.second.size()) pcst_.erase(i.first); return; }
+            for ( auto& i : pcst_blocked_ ) 
+                    if ( i.second.erase( c ) ) { if(!i.second.size()) pcst_blocked_.erase(i.first); return; }
         }
 
         void 
@@ -99,9 +98,10 @@ namespace signal0x
         operator()( Args... args ) const
         { 
             lock_guard_type l( m_ );      
-            for ( auto const & i : pcst_ )
-                for ( auto const & j : i.second )
-                    (j.second)( args... );
+            for ( auto const & i : pcst_ ) //invoking functions according to their priorities
+                for ( auto const & j : i.second ) //if of same priority, invoking randomly
+                    try { (j.second)( args... ); } //in case of bad function call, such like null ptr, just skip 
+                    catch( std::bad_function_call& bfc ) {} 
         }
 
         void 
@@ -109,14 +109,14 @@ namespace signal0x
         { operator()(args...); }
 
         template<typename Output_Iterator>
-        Output_Iterator
+        void
         operator() ( Output_Iterator o, Args... args ) const
         {
             lock_guard_type l( m_ );      
             for ( auto const & i : pcst_ )
                 for ( auto const & j : i.second )
-                    *o++ = (j.second)( args... );
-            return o;
+                    try { *o++ = (j.second)( args... ); }//redirect the return values to a stream
+                    catch( std::bad_function_call& bfc ) {}
         }
 
         bool 
@@ -126,9 +126,9 @@ namespace signal0x
             for ( auto i : pcst_ )
                 for ( auto j : i.second )
                 {  
-                    if ( j.first != con ) continue;
-                    pcst_blocked_[i.first].insert( j );
-                    pcst_[i.first].erase( con );
+                    if ( j.first != con ) continue; 
+                    pcst_blocked_[i.first].insert( j ); //copy the connection to the blocked group
+                    pcst_[i.first].erase( con );        //erase the connection from the normal group
                     return true; 
                 }
             return false;
@@ -142,8 +142,8 @@ namespace signal0x
                 for ( auto j : i.second )
                 {  
                     if ( j.first != con ) continue;
-                    pcst_[i.first].insert( j );
-                    pcst_blocked_[i.first].erase( con );
+                    pcst_[i.first].insert( j );         //copy the connection to the normal group
+                    pcst_blocked_[i.first].erase( con );//erase the connection from the blocked group
                     return true; 
                 }
             return false;
@@ -152,37 +152,41 @@ namespace signal0x
         void 
         swap( self_type& other )
         {
-            std::lock( m_, other.m_); 
+            std::lock( m_, other.m_ ); 
             lock_guard_type l1( m_, std::adopt_lock );      
             lock_guard_type l2( other.m_, std::adopt_lock );
-            std::swap( pcst_, other.pcst_ );
-            std::swap( pcst_blocked_, other.pcst_blocked_ );
+            std::swap( pcst_, other.pcst_ );                //swap the normal group members    
+            std::swap( pcst_blocked_, other.pcst_blocked_ );//swap the blocked group members
         }
 
+    private:
+        priority_connection_subscriber_type                     pcst_blocked_; //the blocked group
+        priority_connection_subscriber_type                     pcst_;         //the normal group 
+        mutable mutex_type                                      m_;            //mutex 
     };//struct signal
 
     template< typename R, typename... Arg >
-    void 
+    void //swap two signals
     swap( signal<R,Arg...>& lhs, signal<R,Arg...>& rhs )
     { lhs.swap( rhs ); }
 
     template< typename R, typename... Arg >
-    void 
+    void //erase a connection from a signal
     disconnect( signal<R, Arg...>& sig, const connection_type& con )
     { sig.disconnect( con ); }
 
     template< typename R, typename... Arg >
-    void 
+    void //overload disconnection
     disconnect( const connection_type& con, signal<R, Arg...>& sig )
     { sig.disconnect( con ); }
 
     template<typename S, typename... F>
-    connection_type
+    connection_type //connect functions f to a signal s, with priority w
     connect( const typename S::priotity_type w, S& s, const F&... f )
     { return s.connect( w, f... ); }
 
     template<typename S, typename... F>
-    connection_type
+    connection_type //connect functions f to a signal s, with lowest priority
     connect(  S& s, const F&... f )
     { return connect( std::numeric_limits<typename S::priority_type>::max(), s, f... ); }
 
@@ -203,16 +207,16 @@ namespace signal0x
         scope_connection( signal_type& sig,  const F&... f ) : sig_(sig)
         { con_ = sig_.connect( std::numeric_limits<priority_type>::max(), f...); }
 
-        const connection_type connection() const { return con_; }
+        const connection_type connection() const { return con_; } 
 
-        ~scope_connection() { sig_.disconnect(con_); }
+        ~scope_connection() { sig_.disconnect(con_); }          //disconnect on leaving scope
 
-        scope_connection( const self_type& ) = delete;
-        self_type& operator = ( const self_type& ) = delete;
+        scope_connection( const self_type& ) = delete;          //no copy ctor
+        self_type& operator = ( const self_type& ) = delete;    //no assignment operator
 
         private:
-        signal_type& sig_;
-        connection_type con_;
+        signal_type& sig_;    
+        connection_type con_;  
     };
 
 }//namespace signal0x

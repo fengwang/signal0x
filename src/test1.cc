@@ -6,7 +6,7 @@
 using namespace std;
  
 // 被观察目标
-struct CSubject{
+struct subject{
    
     typedef signal0x::signal<void, string> sig_t;
     sig_t m_sig;
@@ -25,24 +25,24 @@ struct CSubject{
 };
  
 // 观察者
-struct CObserver{
+struct observer{
     // 有新消息时被回调
-    void newsIncoming(string s)
+    void receive_news(string s)
     {
         cout << this << " received:" << s << endl;
     }   
     // 声明观察目标
-    void watch(CSubject& subject)
+    void watch(subject& subject)
     {
-        subject.subscribe(std::bind(&CObserver::newsIncoming, this, std::placeholders::_1));
+        subject.subscribe(std::bind(&observer::receive_news, this, std::placeholders::_1));
     }
 };
  
 int main(int argc, char* argv[])
 {
-    CSubject a,b,c;
+    subject a,b,c;
  
-    CObserver x,y,z;
+    observer x,y,z;
  
     x.watch(a);
     y.watch(a);
