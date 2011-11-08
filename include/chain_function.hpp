@@ -7,27 +7,6 @@ namespace signal0x
 {
   namespace signal0x_private
   {
-    //
-    //  an example:
-    //              void g(int);
-    //              struct h{ void operator(int); };
-    //              struct i{ void f(int); };
-    //              i i_;
-    //
-    //              //make a chain
-    //              auto chain = chain_function(    //a lambda function
-    //                                              [](int i){std::cout<<i;}, 
-    //                                              //a normal function
-    //                                              g, 
-    //                                              //a functor
-    //                                              h(), 
-    //                                              //a pointer to a class method
-    //                                              std::bind( &i::f, &i_, std::placeholders::_1 ) 
-    //                                          );
-    //              //call the chain function
-    //              int n;
-    //              chain(n); //invoke \lambda(n), g(n), (h())(n), i_(n) in sequence
-    //
     template< typename R, typename... Args >
     struct chain_function
     {
