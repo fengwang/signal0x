@@ -50,7 +50,7 @@ struct d4
 
 int main()
 {
-    signal<void> s;
+    signal0x::signal<void> s;
     hello h;
 
     connection_type c1 = s.connect( hello() );
@@ -72,14 +72,14 @@ int main()
     s.disconnect( c3 );
 
 
-    signal<void,int> s1;
+    signal0x::signal<void,int> s1;
     s1.connect( print_1 );
     s1.connect( double_1 );
     s1(10);
     std::cout << "\n";
 
 
-    signal<double, double> dd;
+    signal0x::signal<double, double> dd;
     dd.connect( d1 );
     dd.connect( d2 );
     dd.connect( d3 );
