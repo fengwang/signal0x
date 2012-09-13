@@ -10,6 +10,9 @@
 \usepackage{alltt}
 \usepackage{framed}
 \usepackage{lipsum}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{fullpage}
+\usepackage{xtab}
 
 \newcommand{\hlstd}[1]{\textcolor[rgb]{0.2,0,0.4}{#1}}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.2,0.73,0.02}{#1}}
@@ -77,7 +80,12 @@
 
 \subsubsection{First example -- hello world}
 
+
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlslc{//\ an\ ordinary\ function}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello\textunderscore world}\hlstd{}\hlopt{()}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlopt{\{}\\
@@ -92,7 +100,9 @@
 \hllin{\ \ \ 12\ }\hlstd{}\\
 \hllin{\ \ \ 13\ }\hlslc{//(3)\ signal\ triggered}\\
 \hllin{\ \ \ 14\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -113,8 +123,11 @@
 
 \item a function \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
@@ -122,14 +135,19 @@
 \hllin{\ \ \ \ 5\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ \ 6\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{f\ }\hlopt{);}\\
 \hllin{\ \ \ \ 7\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
 \item a functor \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
@@ -139,22 +157,29 @@
 \hllin{\ \ \ \ 7\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwd{f}\hlstd{}\hlopt{()\ );}\\
 \hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{f\textunderscore \ }\hlopt{);}\\
 \hllin{\ \ \ \ 9\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
 
 \item a lambda object \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
-\hllin{\ \ \ \ 3\ }\hlstd{\\
-\hllin{\ \ \ \ 4\ }signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 3\ }\hlstd{}\\
+\hllin{\ \ \ \ 4\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ \ 5\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ {[}{]}\{\}\ );}\hlstd{}\hlslc{//an\ anonymous\ lambda\ object}\\
 \hllin{\ \ \ \ 6\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -163,8 +188,11 @@
 
 \item a pointer to a member function \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$functional$>$}\hlslc{//for\ std::bind\ }\\
 \hllin{\ \ \ \ 3\ }\hlppc{}\hlstd{}\hlkwa{using\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{;}\\
@@ -177,7 +205,9 @@
 \hllin{\ \ \ 10\ }\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ 11\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{bind}\hlstd{}\hlopt{(\ \&}\hlstd{f}\hlopt{::}\hlstd{ff}\hlopt{,\ \&}\hlstd{f\textunderscore }\hlopt{)\ );}\\
 \hllin{\ \ \ 12\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -186,50 +216,62 @@
 
 \subsubsection{Multiple slots}
 
-\paragraph{Multiple slots can be connected to a same signal one by one, and if the signal is triggered, all slots connected to this signal will be called.  \\}
-Another "hello world" example \\
+\paragraph{Multiple slots can be connected to a same signal one by one, and if the signal is triggered, all slots connected to this signal will be called. 
+Another "hello world" example  }
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
 \hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
 \hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
-\hllin{\ \ \ \ 6\ }\hlstd{\\
-\hllin{\ \ \ \ 7\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\\
+\hllin{\ \ \ \ 7\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello\ }\hlopt{);}\\
 \hllin{\ \ \ \ 9\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{world\ }\hlopt{);}\\
 \hllin{\ \ \ 10\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!"}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
-\paragraph{Simply, multiple slots can be connected to a same signal at the same time\\}
-for example: \\
+\paragraph{Simply, multiple slots can be connected to a same signal at the same time. For example: }
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
 \hllin{\ \ \ \ 4\ }\hlkwb{void\ }\hlstd{hello}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
 \hllin{\ \ \ \ 5\ }\hlstd{}\hlkwb{void\ }\hlstd{world}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"World!"}\hlstd{}\hlopt{;\ \}}\\
-\hllin{\ \ \ \ 6\ }\hlstd{\\
-\hllin{\ \ \ \ 7\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ \ 6\ }\hlstd{}\\
+\hllin{\ \ \ \ 7\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ \ 8\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
 \hllin{\ \ \ \ 9\ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!"}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
 \subsubsection{Ordering multiple slots call priorities}
 
-\paragraph{Connection could be created with priority argument, which means slots can be called in a specified order we set. By default, if no priority argument provided, the connected slot will be the last one invoked.\\}
-an example: \\
+\paragraph{Connection could be created with priority argument, which means slots can be called in a specified order we set. By default,
+    if no priority argument provided, the connected slot will be the last one invoked. For example:}
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hlppc{\#include\ $<$signal.hpp$>$}\hspace*{\fill}\\
 \hlstd{}\hlppc{\#include\ $<$iostream$>$}\hspace*{\fill}\\
 \hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\hspace*{\fill}\\
@@ -246,7 +288,9 @@ an example: \\
 \hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\hspace*{\fill}\\
 \hlstd{}\hlopt{\}}\hlstd{}\hspace*{\fill}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -263,8 +307,11 @@ this program will produce
 
 if several slots connected to a same signal at the same time, they share same priority \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
@@ -275,25 +322,30 @@ if several slots connected to a same signal at the same time, they share same pr
 \hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()()}\hlstd{\ \ }\hlopt{}\hlstd{}\hlkwb{const}\\
 \hllin{\ \ \ \ 9\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"\ Good\ "}\hlstd{}\hlopt{;\ \}}\\
 \hllin{\ \ \ 10\ }\hlstd{}\hlopt{\};}\\
-\hllin{\ \ \ 11\ }\hlstd{\\
-\hllin{\ \ \ 12\ }signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
-\hllin{\ \ \ 13\ }\hlstd{\\
-\hllin{\ \ \ 14\ }sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 11\ }\hlstd{}\\
+\hllin{\ \ \ 12\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
+\hllin{\ \ \ 13\ }\hlstd{}\\
+\hllin{\ \ \ 14\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
 \hllin{\ \ \ 15\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{good}\hlopt{(),\ {[}{]}()\{}\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Morning!"}\hlstd{}\hlopt{;\}\ );}\\
 \hllin{\ \ \ 16\ }\hlstd{}\\
 \hllin{\ \ \ 17\ }\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//print\ "Hello\ World!\ Good\ Morning!"}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
 
 \subsection{Passing values to and from slots}
 
-\paragraph{Signals can propagate arguments to each of the slots they call.\\}
-most code of the example below is borrowed from boost::signals \\
+\paragraph{Signals can propagate arguments to each of the slots they call. Most example code of the example below is borrowed from
+    boost::signals }
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\\
@@ -322,11 +374,13 @@ most code of the example below is borrowed from boost::signals \\
 \hllin{\ \ \ 26\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{,\ }\hlstd{}\hlkwb{float}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
 \hllin{\ \ \ 27\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{print\textunderscore sum}\hlopt{,\ }\hlstd{print\textunderscore product}\hlopt{,\ }\hlstd{print\textunderscore difference}\hlopt{,\ }\hlstd{print\textunderscore quotient\ }\hlopt{);}\\
 \hllin{\ \ \ 28\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{3}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{4\ }\hlstd{}\hlopt{);\ }\\
-\hllin{\ \ \ 29\ }\hlstd{\\
-\hllin{\ \ \ 30\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 29\ }\hlstd{}\\
+\hllin{\ \ \ 30\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 31\ }\hlstd{}\hlopt{\}}\\
 \hllin{\ \ \ 32\ }\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -347,12 +401,14 @@ This means any values that are given to sig when it is called like a function ar
 
 \subsection{Collecting slots return values}
 
-\paragraph{Just as slots can receive arguments, they can also return values. Following STL's patterns, In signal0x, we collect return values by forwarding them into an output iterator \\}
+\paragraph{Just as slots can receive arguments, they can also return values. Following STL's patterns, In signal0x, we collect return
+    values by forwarding them into an output iterator. Slightly modify previous example, we redirect the return values to an ostream iterator:}
 
-Slightly modify previous example, we redirect the return values to an ostream iterator \\
-
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$iterator$>$}\\
@@ -370,11 +426,13 @@ Slightly modify previous example, we redirect the return values to an ostream it
 \hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{difference\ }\hlopt{);}\\
 \hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{quotient\ }\hlopt{);}\\
 \hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{(\ }\hlstd{std}\hlopt{::}\hlstd{ostream\textunderscore iterator}\hlopt{$<$}\hlstd{}\hlkwb{float}\hlstd{}\hlopt{$>$(}\hlstd{std}\hlopt{::}\hlstd{cout}\hlopt{,\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{),\ }\hlstd{}\hlnum{3.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{4.0\ }\hlstd{}\hlopt{);\ }\\
-\hllin{\ \ \ 18\ }\hlstd{\\
-\hllin{\ \ \ 19\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 18\ }\hlstd{}\\
+\hllin{\ \ \ 19\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 20\ }\hlstd{}\hlopt{\}}\\
 \hllin{\ \ \ 21\ }\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -393,10 +451,15 @@ This programe will print the following
 
 Please note here, if we connect all slots at the same time, they will be combined, only returning the last function's result; This means if the connection is rewritten as \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{\hllin{\ \ \ \ 1\ }}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{sum}\hlopt{,\ }\hlstd{product}\hlopt{,\ }\hlstd{difference}\hlopt{,\ }\hlstd{quotient\ }\hlopt{);}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -405,11 +468,13 @@ only \hlstd{0.75} will be printed.
 
 \subsection{Disconnecting slots}
 
-\paragraph{Some times slots are only used to receive a few events and are then disconnected, so the programmer needs control to decide when a slot should no longer be connected.\\}
-
-an example \\
-\noindent
+\paragraph{Some times slots are only used to receive a few events and are then disconnected, so the programmer needs control to decide
+    when a slot should no longer be connected. For Example:}
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$iterator$>$}\\
@@ -420,27 +485,32 @@ an example \\
 \hllin{\ \ \ \ 8\ }\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\\
 \hllin{\ \ \ \ 9\ }\hlstd{}\hlopt{\{}\\
 \hllin{\ \ \ 10\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{$>$\ }\hlstd{sig}\hlopt{;}\\
-\hllin{\ \ \ 11\ }\hlstd{\\
-\hllin{\ \ \ 12\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{con\ }\hlopt{=\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
+\hllin{\ \ \ 11\ }\hlstd{}\\
+\hllin{\ \ \ 12\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{con\ }\hlopt{=\ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{hello}\hlopt{,\ }\hlstd{world\ }\hlopt{);}\\
 \hllin{\ \ \ 13\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//\ this\ will\ print\ "Hello\ World!"}\\
-\hllin{\ \ \ 14\ }\hlstd{\\
-\hllin{\ \ \ 15\ }}\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(\ }\hlstd{con\ }\hlopt{);\ }\hlstd{}\hlslc{//\ disconnect\ the\ connection}\\
+\hllin{\ \ \ 14\ }\hlstd{}\\
+\hllin{\ \ \ 15\ }\hlstd{\ \ \ \ }\hlstd{sig}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(\ }\hlstd{con\ }\hlopt{);\ }\hlstd{}\hlslc{//\ disconnect\ the\ connection}\\
 \hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();\ }\hlstd{}\hlslc{//\ nothing\ happens\ here}\\
-\hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{\\
-\hllin{\ \ \ 18\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 17\ }\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\\
+\hllin{\ \ \ 18\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 19\ }\hlstd{}\hlopt{\}}\\
 \hllin{\ \ \ 20\ }\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
 \subsection{Blocking/Unblocking slot}
-\paragraph{Slots can be temporarily "blocked", meaning that they will be ignored when the signal is invoked but have not been disconnected. The block member function temporarily blocks a slot, which can be unblocked via unblock.\\}
+\paragraph{Slots can be temporarily "blocked", meaning that they will be ignored when the signal is invoked but have not been
+    disconnected. The block member function temporarily blocks a slot, which can be unblocked via unblock. Here is an example of
+    block/unblock slot: }
 
-Here is an example of block/unblock slot: \\
-
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{hello}\hlstd{}\hlopt{()\{\ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"Hello\ "}\hlstd{}\hlopt{;\ \}}\\
@@ -458,7 +528,9 @@ Here is an example of block/unblock slot: \\
 \hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlopt{}\hlstd{}\hlslc{//prints\ "Hello\ World!Good\ Morning!"}\\
 \hllin{\ \ \ 16\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 17\ }\hlstd{}\hlopt{\}}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -468,12 +540,15 @@ Here is an example of block/unblock slot: \\
 
 
 \subsection{Scoped connections}
-\paragraph{The signal0x::scope\_connection class references a signal/slot connection that will be disconnected when the scoped\_connection class goes out of scope. \\}
+\paragraph{The signal0x::scope\_connection class references a signal/slot connection that will be disconnected when the
+    scoped\_connection class goes out of scope. For example:}
 
-an example \\
 
-\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$cstddef$>$}\\
@@ -498,10 +573,12 @@ an example \\
 \hllin{\ \ \ 22\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\}}\\
 \hllin{\ \ \ 23\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{signal\ triggered\ out\ of\ scope."}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 24\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sig}\hlstd{}\hlopt{();}\\
-\hllin{\ \ \ 25\ }\hlstd{\\
-\hllin{\ \ \ 26\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
+\hllin{\ \ \ 25\ }\hlstd{}\\
+\hllin{\ \ \ 26\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 27\ }\hlstd{}\hlopt{\}}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
@@ -533,6 +610,10 @@ Signals can be used to implement flexible Document-View architectures. The docum
 
 %\noindent
 \ttfamily
+\begin{center}
+\rowcolors{1}{lightgray}{white}
+\begin{xtabular}{||l||}
+\hline
 \hlstd{}\hllin{\ \ \ \ 1\ }\hlppc{\#include\ $<$signal.hpp$>$}\\
 \hllin{\ \ \ \ 2\ }\hlstd{}\hlppc{\#include\ $<$iostream$>$}\\
 \hllin{\ \ \ \ 3\ }\hlstd{}\hlppc{\#include\ $<$string$>$}\\
@@ -541,18 +622,18 @@ Signals can be used to implement flexible Document-View architectures. The docum
 \hllin{\ \ \ \ 6\ }\hlopt{\{}\\
 \hllin{\ \ \ \ 7\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{typedef\ }\hlstd{signal0x}\hlopt{::}\hlstd{signal}\hlopt{$<$}\hlstd{}\hlkwb{void}\hlstd{}\hlopt{,}\hlstd{}\hlkwb{bool}\hlstd{}\hlopt{$>$}\hlstd{\ \ }\hlopt{}\hlstd{signal\textunderscore t}\hlopt{;}\\
 \hllin{\ \ \ \ 8\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{typedef\ }\hlstd{signal\textunderscore t}\hlopt{::}\hlstd{connection\textunderscore type}\hlstd{\ \ }\hlstd{connection\textunderscore t}\hlopt{;}\\
-\hllin{\ \ \ \ 9\ }\hlstd{\\
-\hllin{\ \ \ 10\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{template}\hlstd{}\hlopt{$<$}\hlstd{typename\ F}\hlopt{$>$}\\
+\hllin{\ \ \ \ 9\ }\hlstd{}\\
+\hllin{\ \ \ 10\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwc{template}\hlstd{}\hlopt{$<$}\hlstd{typename\ F}\hlopt{$>$}\\
 \hllin{\ \ \ 11\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{connection\textunderscore t\ }\hlkwd{connect}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{const\ }\hlstd{F}\hlopt{\&\ }\hlstd{subscriber}\hlopt{)}\\
 \hllin{\ \ \ 12\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{}\hlkwa{return\ }\hlstd{m\textunderscore sig}\hlopt{.}\hlstd{}\hlkwd{connect}\hlstd{}\hlopt{(}\hlstd{subscriber}\hlopt{);\ \}}\\
-\hllin{\ \ \ 13\ }\hlstd{\\
-\hllin{\ \ \ 14\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{connection\textunderscore t\ subscriber}\hlopt{)}\\
+\hllin{\ \ \ 13\ }\hlstd{}\\
+\hllin{\ \ \ 14\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{connection\textunderscore t\ subscriber}\hlopt{)}\\
 \hllin{\ \ \ 15\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{m\textunderscore sig}\hlopt{.}\hlstd{}\hlkwd{disconnect}\hlstd{}\hlopt{(}\hlstd{subscriber}\hlopt{);\ \}}\\
-\hllin{\ \ \ 16\ }\hlstd{\\
-\hllin{\ \ \ 17\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{append}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{const\ char}\hlstd{}\hlopt{{*}\ }\hlstd{s}\hlopt{)}\\
+\hllin{\ \ \ 16\ }\hlstd{}\\
+\hllin{\ \ \ 17\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwb{void\ }\hlstd{}\hlkwd{append}\hlstd{}\hlopt{(}\hlstd{}\hlkwb{const\ char}\hlstd{}\hlopt{{*}\ }\hlstd{s}\hlopt{)}\\
 \hllin{\ \ \ 18\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{m\textunderscore text\ }\hlopt{+=\ }\hlstd{s}\hlopt{;\ }\hlstd{}\hlkwd{m\textunderscore sig}\hlstd{}\hlopt{(}\hlstd{}\hlkwa{true}\hlstd{}\hlopt{);\ \}}\\
-\hllin{\ \ \ 19\ }\hlstd{\\
-\hllin{\ \ \ 20\ }}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{std}\hlopt{::}\hlstd{string}\hlopt{\&\ }\hlstd{}\hlkwd{getText}\hlstd{}\hlopt{()\ }\hlstd{}\hlkwb{const}\\
+\hllin{\ \ \ 19\ }\hlstd{}\\
+\hllin{\ \ \ 20\ }\hlstd{\ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{std}\hlopt{::}\hlstd{string}\hlopt{\&\ }\hlstd{}\hlkwd{getText}\hlstd{}\hlopt{()\ }\hlstd{}\hlkwb{const}\\
 \hllin{\ \ \ 21\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{\ }\hlstd{}\hlkwa{return\ }\hlstd{m\textunderscore text}\hlopt{;\ \}}\\
 \hllin{\ \ \ 22\ }\hlstd{}\hlkwc{private}\hlstd{}\hlopt{:}\\
 \hllin{\ \ \ 23\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{signal\textunderscore t}\hlstd{\ \ \ \ }\hlstd{m\textunderscore sig}\hlopt{;}\\
@@ -594,7 +675,9 @@ Signals can be used to implement flexible Document-View architectures. The docum
 \hllin{\ \ \ 59\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{doc}\hlopt{.}\hlstd{}\hlkwd{append}\hlstd{}\hlopt{(}\hlstd{argc\ }\hlopt{==\ }\hlstd{}\hlnum{2\ }\hlstd{?\ argv}\hlopt{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlopt{{]}\ :\ }\hlstd{}\hlstr{"Hello\ world!"}\hlstd{}\hlopt{);}\\
 \hllin{\ \ \ 60\ }\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\\
 \hllin{\ \ \ 61\ }\hlstd{}\hlopt{\}}\hlstd{}\\
-\mbox{}
+\hline
+\end{xtabular}
+\end{center}
 \normalfont
 \normalsize
 
